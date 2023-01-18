@@ -1,0 +1,108 @@
+.. role:: hidden
+    :class: hidden-section
+
+
+.. currentmodule:: hxeva.product.base
+
+业务基础模块
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+    
+    BaseProdEvaluate
+    DataReader 
+    Extend 
+    Log 
+
+
+.. currentmodule:: hxeva.product.continueparam
+
+数值模式产品
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    ContinueParamGrid
+
+短临强对流产品
+================================
+
+.. currentmodule:: hxeva.product.HAIL_03H
+
+冰雹产品
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    Hail03HSta
+
+
+.. currentmodule:: hxeva.product.HEAVYRAIN_03H
+
+强降水产品
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    HeavyRain03HSta
+
+
+.. currentmodule:: hxeva.product.WINDSTORM_03H
+
+雷暴大风产品
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    WindStorm03HSta
+
+
+短临雷达产品
+================================
+
+.. currentmodule:: hxeva.product.RADA_CREF_03H
+
+雷达回波预报产品
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    RadaCREF03HGrid
+
+
+.. currentmodule:: hxeva.product.RADA_PRE_HOR
+
+雷达定量降水反演产品(QPE)
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    RadaPreHorGrid
+    RadaPreHorSta
+
+
+.. currentmodule:: hxeva.product.RADA_PRE_HOR_03H
+
+雷达降水预报产品(QPF)
+--------------------------------
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    RadaPreHor03HGrid
+    RadaPreHor03HSta

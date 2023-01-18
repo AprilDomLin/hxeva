@@ -1,0 +1,788 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hxeva.evaluate.wind &mdash; hxeva 0.1.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#id2">评估检验体系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">使用文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id2">索引与列表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>hxeva.evaluate.wind</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>hxeva.evaluate.wind 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseEvaluate</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">Default</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Wind&quot;</span><span class="p">,</span> <span class="s2">&quot;WindSpeed&quot;</span><span class="p">,</span> <span class="s2">&quot;WindDirection&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="WindDirection"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindDirection.html#hxeva.evaluate.wind.WindDirection">[文档]</a><span class="k">class</span> <span class="nc">WindDirection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;风向评分预处理</span>
+<span class="sd">    </span>
+<span class="sd">    主要包括8风向分类和风向的评分分类。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="WindDirection.classify"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindDirection.html#hxeva.evaluate.wind.WindDirection.classify">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 风向评分分类</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">        </span>
+<span class="sd">            以8风向评分为例, 其 num = 8, offset = 22.5°</span>
+<span class="sd">            </span>
+<span class="sd">            ==========================  ============================  =============  ==============  ===============  ===============  ===============   ===============   ===============</span>
+<span class="sd">               观测值  \\   预报值         0.0°~22.5° / 337.5°~360.0°    22.5°~67.5°    67.5°~112.5°    112.5°~157.5°    157.5°~202.5°    202.5°~247.5°     247.5°~292.5°     292.5°~337.5°</span>
+<span class="sd">            ==========================  ============================  =============  ==============  ===============  ===============  ===============   ===============   ===============</span>
+<span class="sd">            0.0°~22.5° / 337.5°~360.0°              1                     0.6            0                0                 0                 0                 0               0.6</span>
+<span class="sd">                  22.5~67.5°                       0.6                     1            0.6               0                 0                 0                 0                0</span>
+<span class="sd">                  67.5~112.5°                       0                     0.6            1               0.6                0                 0                 0                0</span>
+<span class="sd">                 112.5~157.5°                       0                      0            0.6               1                0.6                0                 0                0</span>
+<span class="sd">                 157.5~202.5°                       0                      0             0               0.6                1                0.6                0                0</span>
+<span class="sd">                 202.5~247.5°                       0                      0             0                0                0.6                1                0.6               0</span>
+<span class="sd">                 247.5~292.5°                       0                      0             0                0                 0                0.6                1               0.6</span>
+<span class="sd">                 292.5~337.5°                      0.6                     0             0                0                 0                 0                0.6               1</span>
+<span class="sd">            ==========================  ============================  =============  ==============  ===============  ===============  ===============   ===============   ===============</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实转变后的风向数组</span>
+<span class="sd">            test : 待测试转变后的风向数组</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            num : 默认为``8``。 风向个数划分。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风向评分分类结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风向 0 ~ 360 度 范围</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span>
+        <span class="c1"># lvl_data *= np.where(truth == test, 1.0, 1)                # Score 1.0</span>
+        <span class="c1"># 以初始化默认情况，不用赋值</span>
+        <span class="c1"># Score 0.6 （num 7 和 num 0 评分也为0.6）</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Score 0.6</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Score 0</span>
+        <span class="n">lvl_data</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">return</span> <span class="n">lvl_data</span></div>
+    
+<div class="viewcode-block" id="WindDirection.transform"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindDirection.html#hxeva.evaluate.wind.WindDirection.transform">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风向根据阈值或个数进行划分。</span>
+<span class="sd">        其中阈值划分同BaseValue.transform方法，个数划分通常为8风向或4风向的划分（主要取决于参数num的选取）</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: 需根据阈值划分级别的风向数据。</span>
+<span class="sd">            exist_flag: 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            threshold(list): 默认为``None``。风向分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            num(int): 默认为``8``。风向个数划分。</span>
+<span class="sd">            offset(float): 默认为``22.5``。偏差度数为风向个数划分的一半度数。如：8风向划分，则偏差度数为 360 / (2 * 8) = 22.5°</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            等级划分的风向数据(cdata)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">BaseEvaluate</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 默认风向 0 ~ 360 度 范围</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="mf">22.5</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="mi">360</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="n">offset</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected got </span><span class="si">{</span><span class="mi">360</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span><span class="si">}</span><span class="s2">, but got &#39;offset&#39; </span><span class="si">{</span><span class="n">offset</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+            <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="n">lvl_data</span><span class="p">[</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">offset</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">360</span>
+            <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">lvl_data</span> <span class="o">//</span> <span class="p">(</span><span class="mi">360</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">lvl_data</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">return</span> <span class="n">lvl_data</span></div></div>
+
+
+<div class="viewcode-block" id="WindSpeed"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindSpeed.html#hxeva.evaluate.wind.WindSpeed">[文档]</a><span class="k">class</span> <span class="nc">WindSpeed</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;风速评分预处理</span>
+<span class="sd">    </span>
+<span class="sd">    主要包括蒲氏风速分类和风速评分分类。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="WindSpeed.classify"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindSpeed.html#hxeva.evaluate.wind.WindSpeed.classify">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 风速评分分类</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            以蒲氏风速分级为例</span>
+
+<span class="sd">            ================  ===========  ===========  ===========  ===========  ===========  ============  =============  =============  =============  ========</span>
+<span class="sd">             观测值 \\ 预报值    0.0 ~ 0.2    0.3 ~ 1.5    1.6 ~ 3.3    3.4 ~ 5.4    5.5 ~ 7.9    8.0 ~ 10.7    10.8 ~ 13.8    13.9 ~ 17.1    17.2 ~ 20.7     ...</span>
+<span class="sd">            ================  ===========  ===========  ===========  ===========  ===========  ============  =============  =============  =============  ========</span>
+<span class="sd">               0.0 ~ 0.2          1           0.6          0.4           0            0            0              0              0              0            0</span>
+<span class="sd">               0.3 ~ 1.5         0.6           1           0.6          0.4           0            0              0              0              0            0</span>
+<span class="sd">               1.6 ~ 3.3         0.4          0.6           1           0.6          0.4           0              0              0              0            0</span>
+<span class="sd">               3.4 ~ 5.4          0           0.4          0.6           1           0.6          0.4             0              0              0            0</span>
+<span class="sd">               5.5 ~ 7.9          0            0           0.4          0.6           1           0.6            0.4             0              0            0</span>
+<span class="sd">               8.0 ~ 10.7         0            0            0           0.4          0.6           1             0.6            0.4             0            0</span>
+<span class="sd">              10.8 ~ 13.8         0            0            0            0           0.4          0.6             1             0.6            0.4          ...</span>
+<span class="sd">              13.9 ~ 17.1         0            0            0            0            0            0             0.6             1             0.6          ...</span>
+<span class="sd">              17.2 ~ 20.7         0            0            0            0            0            0              0             0.6             1           ...</span>
+<span class="sd">                  ...            ...          ...          ...          ...          ...          ...            ...            ...            ...          ...</span>
+<span class="sd">            ================  ===========  ===========  ===========  ===========  ===========  ============  =============  =============  =============  ========</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实转变后的风速数组</span>
+<span class="sd">            test : 待测试转变后的风速数组</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速评分分类值</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速在 0 ~ 999 m/s 区间内</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span>
+        <span class="c1"># lvl_data *= np.where(truth == test, 1.0, 1)           # Score 1.0</span>
+        <span class="c1"># 以初始化默认情况，不用赋值</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Score 0.6</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Score 0.4</span>
+        <span class="n">lvl_data</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Score 0</span>
+        <span class="n">lvl_data</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">return</span> <span class="n">lvl_data</span></div>
+    
+<div class="viewcode-block" id="WindSpeed.severer"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindSpeed.html#hxeva.evaluate.wind.WindSpeed.severer">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">severer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报偏强率(Forecast Severer WindSpeed, FSs)</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`severer_i = \\begin{cases} 1, &amp; ctest_i &gt; ctruth_i  \\\\  0, &amp; ctest_i \\leq ctruth_i \\end{cases}`</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`FSs = \\frac{1}{N} * \\sum{severer_i}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实转变后的风速数组</span>
+<span class="sd">            test : 待测试转变后的风速数组</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速预报偏弱率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速在 0级 ~ 14级 风速区间内</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="n">test</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="WindSpeed.transform"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindSpeed.html#hxeva.evaluate.wind.WindSpeed.transform">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速根据阈值进行划分，等同于蒲氏风速阈值的 BaseValue.transform方法</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            data : 需根据阈值划分级别的风速。</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold : 默认为 ``蒲氏风速表``。分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            等级划分的风速数据(cdata)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 蒲氏风速等级</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">13.9</span><span class="p">,</span> <span class="mf">17.2</span><span class="p">,</span> <span class="mf">20.8</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">,</span> <span class="mf">28.5</span><span class="p">,</span> <span class="mf">32.7</span><span class="p">,</span> <span class="mf">37.0</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">,</span> <span class="mi">999</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">BaseEvaluate</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="WindSpeed.weaker"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.WindSpeed.html#hxeva.evaluate.wind.WindSpeed.weaker">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">weaker</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报偏弱率(Forecast Weaker WindSpeed, FWs)</span>
+
+<span class="sd">        :math:`weaker_i = \\begin{cases} 1, &amp; ctest_i &lt; ctruth_i \\\\ 0, &amp; ctest_i \\geq ctruth_i  \\end{cases}`</span>
+
+<span class="sd">        :math:`FWs = \\frac{1}{N} * \\sum{weaker_i}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实转变后的风速数组</span>
+<span class="sd">            test : 待测试转变后的风速数组</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float : 风速预报偏弱率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速在 0 ~ 999 m/s 区间内</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">&gt;</span> <span class="n">test</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div></div>
+
+
+<div class="viewcode-block" id="Wind"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind">[文档]</a><span class="k">class</span> <span class="nc">Wind</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;风场评分，包括多风速评分，多风向评分和风综合评分(ACz)指标的相关计算。&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Wind</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="Wind.accuracy"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.accuracy">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;准确率(评分转化为，仅有0和1)</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`accuracy_i = \\begin{cases}1 , &amp; truth = test \\\\ 0, &amp; truth \\neq test \\end{cases}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            cdata : 风速/风向分类后的数据(即_classify 处理后的数据)矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">              风速/风向准确率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速/风向准确率结果不为 Default.MissValue 即为存在</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cdata</span> <span class="o">!=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">cdata</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cdata</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">cdata</span><span class="p">[</span><span class="n">tmp</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.ACd"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.ACd">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ACd</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风向预报准确率</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`ACd = \\frac{1}{N} * \\sum{ACd_i}&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风向数据矩阵</span>
+<span class="sd">            test :  测试值风向数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            threshold(list): 默认为``None``。风向分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            num(int): 默认为``8``。风向个数划分。</span>
+<span class="sd">            offset(float): 默认为``22.5``。偏差度数为风向个数划分的一半度数。如：8风向划分，则偏差度数为 360 / (2 * 8) = 22.5°</span>
+
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            风向预报准确率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="mf">22.5</span><span class="p">)</span>
+            <span class="c1"># 原始风向值数据(°) 预处理</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">WindDirection</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.ACs"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.ACs">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ACs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">cmin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cmax</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报准确率</span>
+
+<span class="sd">        :math:`ACs = \\frac{1}{N} * \\sum{ACs_i}&#39;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速大小数据矩阵</span>
+<span class="sd">            test :  测试值风速大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            cmin:  默认为``0``。风速准确率最低分类等级</span>
+<span class="sd">            cmax:  默认为``14``。风速准确率最高分类等级</span>
+<span class="sd">            threshold : 默认为 ``蒲氏风速表``。分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速预报准确率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="c1"># 原始风速值数据(m/s) 预处理</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">WindSpeed</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.ACz"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.ACz">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ACz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ws_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">wd_truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ws_test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">wd_test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风预报综合准确率</span>
+<span class="sd">    </span>
+<span class="sd">        :math:`ACz = \\frac{1}{N} * \\sum{(ACd_i * ACs_i)}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            ws_truth : 真值风速大小数据矩阵</span>
+<span class="sd">            wd_truth : 真值风向大小数据矩阵</span>
+<span class="sd">            ws_test : 测试值风速大小数据矩阵</span>
+<span class="sd">            wd_test : 测试值风向大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            ws_threshold(list):默认为``None``。风速分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            wd_threshold(list):默认为``None``。风向分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            num(int): 默认为``8``。风向个数划分。</span>
+<span class="sd">            offset(float): 默认为``22.5``。偏差度数为风向个数划分的一半度数。如：8风向划分，则偏差度数为 360 / (2 * 8) = 22.5°</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风预报综合准确率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ws_cmin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ws_cmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">ws_cmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ws_cmax&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+        <span class="n">wd_cmin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wd_cmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">wd_cmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wd_cmax&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exist_flag</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ws_truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ws_truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ws_test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ws_test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">wd_truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_truth</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">wd_test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_test</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="c1">#  原始风速数据(m/s)预处理</span>
+            <span class="n">ws_truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ws_truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ws_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="n">ws_test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ws_test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ws_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="c1">#  原始风向数据(°)预处理</span>
+            <span class="n">wd_truth</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">wd_truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wd_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">wd_test</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">wd_test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wd_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+            <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">ws_cmin</span> <span class="o">&lt;=</span> <span class="n">ws_truth</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">ws_truth</span> <span class="o">&lt;=</span> <span class="n">ws_cmax</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">ws_cmin</span> <span class="o">&lt;=</span> <span class="n">ws_test</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">ws_test</span> <span class="o">&lt;=</span> <span class="n">ws_cmax</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_cmin</span> <span class="o">&lt;=</span> <span class="n">wd_truth</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_truth</span> <span class="o">&lt;=</span> <span class="n">wd_cmax</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_cmin</span> <span class="o">&lt;=</span> <span class="n">wd_test</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">wd_test</span> <span class="o">&lt;=</span> <span class="n">wd_cmax</span><span class="p">),</span>
+                <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+                <span class="n">cws</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">ws_truth</span><span class="p">,</span> <span class="n">ws_test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+                <span class="n">cwd</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">wd_truth</span><span class="p">,</span> <span class="n">wd_truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">((</span><span class="n">cws</span> <span class="o">*</span> <span class="n">cwd</span><span class="p">)[</span><span class="n">exist_flag</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.calc">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">tuple</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;算法人员调用进行相关风场评分计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实值数组</span>
+<span class="sd">            test : 待测试值数组</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            acc(int): 默认为``4``。计算结果的精度值，即保留有效小数点位数</span>
+<span class="sd">            save_path(str): 默认为``./winds.csv``。评分结果csv文件的保存路径。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+    
+<div class="viewcode-block" id="Wind.FSs"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.FSs">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">FSs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cmin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">cmax</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报偏强率</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`FSs = \\frac{1}{N} * \\sum{severer_i}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速大小数据矩阵</span>
+<span class="sd">            test :  测试值风速大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            cmin : 默认为``0``。风速偏强率最低风速大小等级。</span>
+<span class="sd">            cmax : 默认为``14``。风速偏强率最大风速大小等级。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速预报偏强率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">severer</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmin</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;</span> <span class="n">cmax</span> <span class="o">==</span> <span class="mi">999</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+    
+<div class="viewcode-block" id="Wind.FWs"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.FWs">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">FWs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cmin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">cmax</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报偏弱率</span>
+
+<span class="sd">        :math:`FWs = \\frac{1}{N} * \\sum{weaker_i}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速大小数据矩阵</span>
+<span class="sd">            test :  测试值风速大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            cmin : 默认为``0``。风速偏强率最低风速大小等级。</span>
+<span class="sd">            cmax : 默认为``14``。风速偏强率最大风速大小等级。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速预报偏弱率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">weaker</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmin</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">|</span> <span class="n">cmax</span> <span class="o">&gt;</span> <span class="mi">14</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+    
+<div class="viewcode-block" id="Wind.SCd"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.SCd">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">SCd</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风向预报评分</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`SCd_i = \\begin{cases} 1.0, &amp; ctruth_i = ctest_i  \\\\  0.6, &amp; |ctruth_i - ctest_i| = 1 \\text{或} |ctruth_i - ctest_i| = num_max - num_min \\\\ 0, &amp; \\text{其他}  \\end{cases}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速大小数据矩阵</span>
+<span class="sd">            test :  测试值风速大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        </span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            threshold(list): 默认为``None``。风向分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            num(int): 默认为``8``。风向个数划分。</span>
+<span class="sd">            offset(float): 默认为``22.5``。偏差度数为风向个数划分的一半度数。如：8风向划分，则偏差度数为 360 / (2 * 8) = 22.5°</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风向预报评分</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="c1"># Keyword Args</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="mf">22.5</span><span class="p">)</span>
+            <span class="c1"># 原始风向值数据(°) 预处理</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">WindDirection</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.score"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.score">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风场(风速/风向)评分计算</span>
+
+<span class="sd">        :math:`score = \\frac{1}{N} * \\sum{score_i}`</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            cdata : 风速/风向评分分类结果</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速/风向评分结果。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速/风向评分结果不为 Default.MissValue 即为存在</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cdata</span> <span class="o">!=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.SCs"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.SCs">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">SCs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">cmin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cmax</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;风速预报评分</span>
+
+<span class="sd">        :math:`SCd_i = \\begin{cases} 1.0, &amp; ctruth_i = ctest_i  \\\\  0.6, &amp; |ctruth_i - ctest_i| = 1  \\\\  0.4, &amp; |ctruth_i - ctest_i| = 2 \\\\ 0, &amp; \\text{其他}  \\end{cases}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速大小数据矩阵</span>
+<span class="sd">            test :  测试值风速大小数据矩阵</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            cmin:  默认为``0``。风速准确率最低分类等级</span>
+<span class="sd">            cmax:  默认为``14``。风速准确率最高分类等级</span>
+<span class="sd">            threshold : 默认为 ``蒲氏风速表``。分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速预报评分</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认风速 0 ~ 999 m/s 范围</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="c1"># 原始风速值数据(m/s) 预处理</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+            <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cmin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="n">cmax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">WindSpeed</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+    
+<div class="viewcode-block" id="Wind.winddirection"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.winddirection">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">winddirection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 风向评分计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风向数据矩阵</span>
+<span class="sd">            test :  测试值风向数据矩阵</span>
+<span class="sd">        </span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            acc(int): 默认为``4``。计算结果的精度值，即保留有效小数点位数</span>
+<span class="sd">            threshold(list): 默认为``None``。风向分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            num(int): 默认为``8``。风向个数划分。</span>
+<span class="sd">            offset(float): 默认为``22.5``。偏差度数为风向个数划分的一半度数。如：8风向划分，则偏差度数为 360 / (2 * 8) = 22.5°</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风向评分结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Keyword Args</span>
+        <span class="c1"># 默认风向 0 ~ 360 度 范围</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
+                          <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;=</span> <span class="mi">360</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="mf">22.5</span><span class="p">)</span>
+        
+        <span class="c1"># 原始风向值数据(°) 预处理</span>
+        <span class="n">truth</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span>  <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+
+        <span class="c1"># 风向指标计算</span>
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">WindDirection</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">)</span>
+        <span class="n">SCd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lvl_data</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]),</span> <span class="n">acc</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">)</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">lvl_data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+        <span class="n">ACd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lvl_data</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]),</span> <span class="n">acc</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">)</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;ACd&quot;</span><span class="p">:</span> <span class="n">ACd</span><span class="p">,</span> <span class="s2">&quot;SCd&quot;</span><span class="p">:</span> <span class="n">SCd</span><span class="p">}</span></div>
+    
+<div class="viewcode-block" id="Wind.windspeed"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.wind.Wind.html#hxeva.evaluate.wind.Wind.windspeed">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">windspeed</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 风速评分计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值风速数据矩阵</span>
+<span class="sd">            test :  测试值风速数据矩阵</span>
+<span class="sd">            </span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag : 默认为``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            acc(int): 默认为``4``。计算结果的精度值，即保留有效小数点位数</span>
+<span class="sd">            threshold : 默认为 ``蒲氏风速表``。分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            风速评分结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Keyword Args</span>
+        <span class="c1"># 默认风速 0 ~ 999 m/s 范围</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
+                          <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        
+        <span class="c1"># 原始风速值数据(m/s) 预处理</span>
+        <span class="n">truth</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        
+        <span class="c1"># 风速指标计算</span>
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">)</span>
+        <span class="n">SCs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lvl_data</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]),</span> <span class="n">acc</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">)</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        
+        <span class="n">lvl_data</span> <span class="o">=</span> <span class="n">lvl_data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+        <span class="n">ACs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lvl_data</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]),</span> <span class="n">acc</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">)</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        
+        <span class="n">FWs</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">weaker</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="n">FSs</span> <span class="o">=</span> <span class="n">WindSpeed</span><span class="o">.</span><span class="n">severer</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;ACs&quot;</span><span class="p">:</span> <span class="n">ACs</span><span class="p">,</span> <span class="s2">&quot;SCs&quot;</span><span class="p">:</span> <span class="n">SCs</span><span class="p">,</span> <span class="s2">&quot;FWs&quot;</span><span class="p">:</span> <span class="n">FWs</span><span class="p">,</span> <span class="s2">&quot;FSs&quot;</span><span class="p">:</span> <span class="n">FSs</span><span class="p">}</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

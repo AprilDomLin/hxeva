@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hxeva.evaluate.scores &mdash; hxeva 0.1.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#id2">评估检验体系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">使用文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id2">索引与列表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>hxeva.evaluate.scores</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>hxeva.evaluate.scores 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseEvaluate</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">Default</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ContingencyTable&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_acc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_bias&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_ets&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_far&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_hss&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_po&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_pod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_ra&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_rd&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_sr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_ts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Score&quot;</span>
+<span class="p">]</span>
+
+<span class="n">ContingencyTable</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;ContingencyTable&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">,</span> <span class="s2">&quot;fn&quot;</span><span class="p">,</span> <span class="s2">&quot;tn&quot;</span><span class="p">],</span> <span class="n">defaults</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<span class="sd">&quot;&quot;&quot;联列表。基于联列表分类的结果，包含 :obj:`tp`、:obj:`fp`、:obj:`fn` 和 :obj:`tn`。</span>
+
+<span class="sd">   ===============  =============  =============</span>
+<span class="sd">    观测  \\  预测        正例             反例</span>
+<span class="sd">   ===============  =============  =============</span>
+<span class="sd">       正例              tp              fn</span>
+<span class="sd">       反例              fp              tn</span>
+<span class="sd">   ===============  =============  =============</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">ContingencyTable</span><span class="o">.</span><span class="n">tp</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;int: 默认为``None``。 命中个数，若为-1，则不存在对应等级分类。&quot;</span>
+<span class="n">ContingencyTable</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;int: 默认为``None``。 空报/误报个数，若为-1，则不存在对应等级分类。&quot;</span>
+<span class="n">ContingencyTable</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;int: 默认为``None``。 漏报个数，若为-1，则不存在对应等级分类。&quot;</span>
+<span class="n">ContingencyTable</span><span class="o">.</span><span class="n">tn</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;int: 默认为``None``。 否定正确个数，若为-1，则不存在对应等级分类。&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_score_check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;As if &quot;Data of Scorer(truth, test)&quot; hasn</span><span class="se">\&#39;</span><span class="s1">t been classified yet!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">_default</span>
+
+
+<div class="viewcode-block" id="calc_acc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_acc.html#hxeva.evaluate.scores.calc_acc">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_acc</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 准确率 / 晴雨评分</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`Accuracy = \\frac{tp + tn}{tp + fp + fn + tn}`</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        准确率 / 晴雨评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">tn</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_bias"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_bias.html#hxeva.evaluate.scores.calc_bias">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_bias</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 偏差值</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`Bias = \\left|\\frac{tp + tn}{tp + fn} - 1\\right|`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        偏差值。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_ets"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_ets.html#hxeva.evaluate.scores.calc_ets">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_ets</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; ETS技巧评分</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`ETS = \\frac{tp -ra}{tp + fp + fn + tn - ra}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ETS技巧评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">calc_ra</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ra</span> <span class="o">!=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span> <span class="o">-</span> <span class="n">ra</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span> <span class="o">-</span> <span class="n">ra</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+
+
+<div class="viewcode-block" id="calc_far"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_far.html#hxeva.evaluate.scores.calc_far">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_far</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 空报率 / 误报率</span>
+
+<span class="sd">    :math:`FAR = \\frac{fp}{tp + fp}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        空报率 / 误报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_hss"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_hss.html#hxeva.evaluate.scores.calc_hss">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_hss</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; HSS技巧评分</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`expect = \\frac{(tp + fn) * (tp + fp) + (tn + fn) * (tn + fp)}{tp + fp + fn + tn}`</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`HSS = \\frac{tp + tn - expect}{tp + fp + fn + tn - expect}`</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        HSS技巧评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">calc_ra</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="n">rd</span> <span class="o">=</span> <span class="n">calc_rd</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ra</span> <span class="o">!=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span> <span class="ow">and</span> <span class="n">rd</span> <span class="o">!=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span> <span class="o">-</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">rd</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">tn</span> <span class="o">-</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">rd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span> <span class="o">-</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">rd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span></div>
+
+
+<div class="viewcode-block" id="calc_po"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_po.html#hxeva.evaluate.scores.calc_po">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_po</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 漏报率</span>
+
+<span class="sd">    :math:`PO = \\frac{fn}{tp + fn}`</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        漏报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_pod"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_pod.html#hxeva.evaluate.scores.calc_pod">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_pod</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 命中率</span>
+
+<span class="sd">    :math:`PO = \\frac{tp}{tp + fn}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        命中率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_ra"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_ra.html#hxeva.evaluate.scores.calc_ra">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_ra</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; ra</span>
+
+<span class="sd">    :math:`ra = \\frac{(tp + fp) * (tp + fn)}{tp + fp + fn + tn}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ra。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_rd"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_rd.html#hxeva.evaluate.scores.calc_rd">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_rd</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; rd</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`ra = \\frac{(tn + fp) * (tn + fn)}{tp + fp + fn + tn}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        rd。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tn</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tn</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_sr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_sr.html#hxeva.evaluate.scores.calc_sr">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_sr</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 成功率</span>
+
+<span class="sd">    :math:`SR = \\frac{tp}{tp + fp}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        空报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="calc_ts"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.calc_ts.html#hxeva.evaluate.scores.calc_ts">[文档]</a><span class="nd">@_score_check</span>
+<span class="k">def</span> <span class="nf">calc_ts</span><span class="p">(</span><span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;TS评分</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`SR = \\frac{tp}{tp + fp + fn}`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TS评分。当无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tables</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tables</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span></div>
+
+
+<div class="viewcode-block" id="Score"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score">[文档]</a><span class="k">class</span> <span class="nc">Score</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;评分指标计算类。</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        可以直接通过调用 `calc` 和 `scores` 方法计算多等级、多类型的评分结果。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="Score.acc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.acc">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">acc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 准确率 / 晴雨评分</span>
+
+<span class="sd">        :math:`Accuracy = \\frac{tp + tn}{tp + fp + fn + tn}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含`tp`、`fp`、`fn`和`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            准确率 / 晴雨评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_acc</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.bias"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.bias">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bias</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 偏差值</span>
+
+<span class="sd">        :math:`Bias = \\left|\\frac{tp + tn}{tp + fn} - 1\\right|`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            偏差值。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_bias</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.calc">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;算法人员调用进行相关评分计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth: 真实值数组</span>
+<span class="sd">            test: 待测试值数组</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            threshold(list): 默认为``[0, 0.1, 2.5, 8.0, 16.0, 150]``。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            level(list[int]): 默认为``[0, 1, ... len(threshold) - 1]``。 需要计算评分的等级。</span>
+<span class="sd">            names(list[str]): 默认为``[&quot;TS&quot;, &quot;PO&quot;, &quot;FAR&quot;, &quot;POD&quot;, &quot;ACC&quot;, &quot;HSS&quot;]``。需要计算的评分内容。</span>
+<span class="sd">            method(:obj:`str`, optional): 默认为``binary``。参数可选择 ``binary``(二分类), ``multi``(多分类) 和</span>
+<span class="sd">            ``grade``(多级)。</span>
+<span class="sd">            n(int): 默认为``0``。领域匹配半径格点数目。</span>
+<span class="sd">            acc(int): 默认为``4``。计算结果的精度值，即保留有效小数点位数</span>
+<span class="sd">            save_path(str): 默认为``./scores.csv``。评分结果csv文件的保存路径。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">scores</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="n">Default</span><span class="o">.</span><span class="n">Threshold</span><span class="p">[</span><span class="s2">&quot;rain&quot;</span><span class="p">][</span><span class="s2">&quot;1h&quot;</span><span class="p">])</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="n">score_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TS&quot;</span><span class="p">,</span> <span class="s2">&quot;PO&quot;</span><span class="p">,</span> <span class="s2">&quot;FAR&quot;</span><span class="p">,</span> <span class="s2">&quot;POD&quot;</span><span class="p">,</span> <span class="s2">&quot;ACC&quot;</span><span class="p">,</span> <span class="s2">&quot;HSS&quot;</span><span class="p">])</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="s2">&quot;./scores.csv&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">score_names</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;level</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">score_names</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">lvl</span> <span class="ow">in</span> <span class="n">level</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">score_names</span><span class="p">:</span>
+                    <span class="n">tmp_data</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lvl</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp_data</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">acc</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">threshold</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;≥ </span><span class="si">{</span><span class="n">threshold</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span><span class="si">}</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;Scores Calculated Done! Result has been saved in &quot;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.classify"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.classify">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContingencyTable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;基于联列表讲数据分为 :obj:`tp`、:obj:`fp`、:obj:`fn` 和 :obj:`tn`.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            TP-命中   FP-误报/空报   FN-漏报   D-否定正确</span>
+
+<span class="sd">            二分类 binary method</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                  观测  \\  预测       FCT &gt;= threshold       FCT &lt;  threshold</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                 OBS &gt;= threshold         TP                      FN</span>
+<span class="sd">                 OBS &lt;  threshold         FP                      TN</span>
+<span class="sd">                ==================  ===================    ===================</span>
+
+<span class="sd">            多分类 multi method</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                  观测  \\  预测        FCT == threshold       FCT =! threshold</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                 OBS == threshold         TP                      FN</span>
+<span class="sd">                 OBS =! threshold         FP                      TN</span>
+<span class="sd">                ==================  ===================    ===================</span>
+
+<span class="sd">            多级别 grade method</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                  观测  \\  预测        FCT == threshold       FCT &lt;  threshold</span>
+<span class="sd">                ==================  ===================    ===================</span>
+<span class="sd">                 OBS == threshold         TP                      FN</span>
+<span class="sd">                 OBS &lt;  threshold         FP                      TN</span>
+<span class="sd">                ==================  ===================    ===================</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth: 真实值数组 或 转变数组</span>
+<span class="sd">            test: 待测试值数组 或 转变数组</span>
+<span class="sd">            level: 分类等级</span>
+<span class="sd">            exist_flag: 默认为``None``。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            method: 默认为``binary``。参数可选择 ``binary``(二分类), ``multi``(多分类) 和 ``grade``(多级)。</span>
+<span class="sd">            n: 默认为``0``。领域匹配半径格点数目。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            联列表分类结果。TP, FP, FN, TN</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 默认降水 0 ~ 999 mm 区间内</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1">#  领域匹配</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;领域匹配半径必须为整型！&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">truth</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="n">test</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;领域匹配仅支持二维数组&quot;</span><span class="p">)</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;binary&quot;</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;multi&quot;</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">!=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">==</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">!=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;grade&quot;</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">==</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">exist_flag</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;The classification method only supports &#39;binary&#39;, &#39;multi&#39; and &#39;grade&#39;!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ContingencyTable</span><span class="p">(</span><span class="n">tp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">c</span><span class="p">),</span> <span class="n">fp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="n">c</span><span class="p">),</span> <span class="n">fn</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">d</span><span class="p">),</span> <span class="n">tn</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="n">d</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ContingencyTable</span><span class="p">(</span><span class="n">tp</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">fp</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">fn</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tn</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.ets"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.ets">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ets</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; ETS技巧评分</span>
+
+<span class="sd">        :math:`ETS = \\frac{tp -ra}{tp + fp + fn + tn - ra}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ETS技巧评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_ets</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.expand"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.expand">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;模糊空间领域匹配。当前仅支持领域最大值的模糊空间匹配。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data : 待模糊空间领域匹配的数组</span>
+<span class="sd">            exist_flag : 默认为``None``。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            n : 默认为``5``。领域匹配的半径，为格点数而非距离或经纬度的度数。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            模糊空间领域匹配的结果。其 shape 与 `data` 相同。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">data_copy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">data_copy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">data</span>
+        <span class="n">data_copy</span><span class="p">[</span><span class="n">data_copy</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data_copy</span><span class="p">[:,</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+    
+<div class="viewcode-block" id="Score.far"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.far">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">far</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">:</span> <span class="n">ContingencyTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 空报率 / 误报率</span>
+
+<span class="sd">        :math:`FAR = \\frac{fp}{tp + fp}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            空报率 / 误报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_far</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.hss"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.hss">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">hss</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; HSS技巧评分</span>
+
+<span class="sd">        :math:`expect = \\frac{(tp + fn) * (tp + fp) + (tn + fn) * (tn + fp)}{tp + fp + fn + tn}`</span>
+<span class="sd">        </span>
+<span class="sd">        :math:`HSS = \\frac{tp + tn - expect}{tp + fp + fn + tn - expect}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HSS技巧评分。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_hss</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.po"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.po">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">po</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 漏报率</span>
+
+<span class="sd">        :math:`PO = \\frac{fn}{tp + fn}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            漏报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_po</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.pod"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.pod">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">pod</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 命中率</span>
+
+<span class="sd">        :math:`PO = \\frac{tp}{tp + fn}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            命中率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_pod</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.scores"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.scores">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">scores</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;更灵活的评分调用方式，类似calc。但没有封装结果保存与打印。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth(ndarray): 真实值数组</span>
+
+<span class="sd">            test(ndarray): 待测试值数组</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            threshold(list): 默认为``[0, 0.1, 2.5, 8.0, 16.0, 150]``。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</span>
+<span class="sd">            level(list[int]): 默认为``[0, 1, ... len(threshold) - 1]``。 需要计算评分的等级。</span>
+<span class="sd">            names(list[str]): 默认为``[&quot;TS&quot;, &quot;PO&quot;, &quot;FAR&quot;, &quot;POD&quot;, &quot;ACC&quot;, &quot;HSS&quot;]``。需要计算的评分内容。</span>
+<span class="sd">            method(:obj:`str`, optional): 默认为``binary``。参数可选择 ``binary``(二分类), ``multi``(多分类) 和 ``grade``(多级)。</span>
+<span class="sd">            n(int): 默认为``0``。领域匹配半径格点数目。</span>
+<span class="sd">            acc(int): 默认为``4``。计算结果的精度值，即保留有效小数点位数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            各等级的不同评分结果。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="n">Default</span><span class="o">.</span><span class="n">Threshold</span><span class="p">[</span><span class="s2">&quot;rain&quot;</span><span class="p">][</span><span class="s2">&quot;1h&quot;</span><span class="p">])</span>
+        <span class="c1"># 根据阈值分类原始数据</span>
+        <span class="n">truth</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">threshold</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">threshold</span><span class="p">)),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="c1"># 多指标、多等级评分参数</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="p">[</span><span class="n">level</span><span class="p">]</span>
+        
+        <span class="n">score_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;TS&quot;</span><span class="p">,</span> <span class="s2">&quot;PO&quot;</span><span class="p">,</span> <span class="s2">&quot;FAR&quot;</span><span class="p">,</span> <span class="s2">&quot;POD&quot;</span><span class="p">,</span> <span class="s2">&quot;ACC&quot;</span><span class="p">,</span> <span class="s2">&quot;HSS&quot;</span><span class="p">])</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;binary&quot;</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">lvl</span> <span class="ow">in</span> <span class="n">level</span><span class="p">:</span>
+            <span class="n">tables</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">lvl</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">score_names</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())(</span><span class="n">tables</span><span class="p">),</span> <span class="n">acc</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lvl</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="Score.sr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.sr">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 成功率</span>
+
+<span class="sd">        :math:`SR = \\frac{tp}{tp + fp}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            空报率。当预报无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_sr</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Score.ts"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.scores.Score.html#hxeva.evaluate.scores.Score.ts">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;TS评分</span>
+
+<span class="sd">        :math:`SR = \\frac{tp}{tp + fp + fn}`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tables: 联列表分类结果，包含:obj:`tp`、:obj:`fp`、:obj:`fn`和 :obj:`tn`的数值。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TS评分。当无降水时，`Default.NoneValue`。当tables存在有-1 或 None值，则返回 `Default.MissValue`。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">calc_ts</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
