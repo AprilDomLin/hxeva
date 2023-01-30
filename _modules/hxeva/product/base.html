@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hxeva.product.base &mdash; hxeva 0.1.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#id2">检验评估体系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">API文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id1">索引与列表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>hxeva.product.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>hxeva.product.base 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">pygrib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">Status</span><span class="p">,</span> <span class="n">General</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BaseProdEvaluate&quot;</span><span class="p">,</span> <span class="s2">&quot;DataReader&quot;</span><span class="p">,</span> <span class="s2">&quot;Extend&quot;</span><span class="p">,</span> <span class="s2">&quot;Log&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Extend"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Extend.html#hxeva.product.base.Extend">[文档]</a><span class="k">class</span> <span class="nc">Extend</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;数据空间信息</span>
+
+<span class="sd">    包括：起始经度(slon)、结束经度(elon)、起始纬度(slat)、结束纬度(elat)、经纬度精度(error) 和 气压高度层(plev)。</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        slat(float): 起始纬度, start latitude。</span>
+<span class="sd">        elat(float): 起始径度, start longitude。</span>
+<span class="sd">        slon(float): 结束纬度, end latitude。</span>
+<span class="sd">        elon(float): 结束经度, end longitude。</span>
+<span class="sd">        error(float): 默认为 ``0.05``。经纬度误差。</span>
+<span class="sd">        plev(list): 默认为 ``None``。气压高度层</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        slat(float): 起始纬度。</span>
+<span class="sd">        elat(float): 起始径度。</span>
+<span class="sd">        slon(float): 结束纬度。</span>
+<span class="sd">        elon(float): 结束经度。</span>
+<span class="sd">        error(float): 默认为 ``0.05``。经纬度误差。</span>
+<span class="sd">        plev(list or float or int): 默认为 ``None``。气压高度层</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slat</span><span class="p">,</span> <span class="n">elat</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span> <span class="n">elon</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">plev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slat</span> <span class="o">=</span> <span class="n">slat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elat</span> <span class="o">=</span> <span class="n">elat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slon</span> <span class="o">=</span> <span class="n">slon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elon</span> <span class="o">=</span> <span class="n">elon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error</span> <span class="o">=</span> <span class="n">error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plev</span> <span class="o">=</span> <span class="n">plev</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slat</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elat</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slon</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elon</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">plev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plev</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plev</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plev</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plev</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_plev</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;Expected &quot;plev&quot; is the number or list, but got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_plev</span><span class="si">}</span><span class="s1">!&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Log"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Log.html#hxeva.product.base.Log">[文档]</a><span class="k">class</span> <span class="nc">Log</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;业务日志记录器</span>
+
+<span class="sd">    向日志记录器(Logger)记录规范信息。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="Log.begin"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Log.html#hxeva.product.base.Log.begin">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 记录开始信息</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger : 日志记录器</span>
+<span class="sd">            info : 日志开始信息</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Log.end"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Log.html#hxeva.product.base.Log.end">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 记录结束信息</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger : 日志记录器</span>
+<span class="sd">            info : 结束信息</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Log.info"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Log.html#hxeva.product.base.Log.info">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 记录常规信息</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger : 日志记录器</span>
+<span class="sd">            info : 日志常规信息</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Status: </span><span class="si">{</span><span class="n">Status</span><span class="o">.</span><span class="n">Normal</span><span class="si">}</span><span class="s2">  -- </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Success: </span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Log.warning"><a class="viewcode-back" href="../../../generated/hxeva.product.base.Log.html#hxeva.product.base.Log.warning">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">Abnormal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 记录警告信息</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            logger : 日志记录器</span>
+<span class="sd">            info: 警告信息</span>
+<span class="sd">            status: 状态码</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Status: </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">  -- </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;!!! </span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2"> !!!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BaseProdEvaluate"><a class="viewcode-back" href="../../../generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate">[文档]</a><span class="k">class</span> <span class="nc">BaseProdEvaluate</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 业务检验基类</span>
+
+<span class="sd">    包含业务日志、实时业务逻辑、时区转化等基础功能。</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        name(str): 产品名称。</span>
+<span class="sd">        log_folder(Path): 默认为 ``{log_root}/{name}``。保存日志的日志文件夹。</span>
+<span class="sd">        logger(logging.Logger): 业务日志记录器。</span>
+<span class="sd">        counter(int): 默认为 ``0``。计数器。用于业务运行时，判断是否需要忽略错误，生产缺失检验结果。</span>
+<span class="sd">        </span>
+<span class="sd">    Args:</span>
+<span class="sd">        logger : 默认为 ``None``。业务日志记录器。</span>
+<span class="sd">        name : 默认为 ``空``。产品名称。</span>
+<span class="sd">        log_root : 默认为 ``./logs``。日志文件夹根目录</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="ow">or</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">log_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./logs&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># 产品名称</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">log_root</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 日志文件夹</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 创建文件夹</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>  <span class="c1"># 日志记录器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 计数器</span>
+    
+<div class="viewcode-block" id="BaseProdEvaluate.new_log"><a class="viewcode-back" href="../../../generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate.new_log">[文档]</a>    <span class="k">def</span> <span class="nf">new_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 新建日志</span>
+<span class="sd">        </span>
+<span class="sd">        删除 :obj:`old_time` 的旧日志文件，并创建 :obj:`tag_time` 的新日志</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_time: 当前时间戳</span>
+<span class="sd">            old_time: 历史待删除时间戳</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># 删除old_time 日志</span>
+        <span class="n">old_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_time</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">)</span>
+        <span class="n">old_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># 创建tag_time 日志</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_folder</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag_time</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="BaseProdEvaluate.main"><a class="viewcode-back" href="../../../generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate.main">[文档]</a>    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="ow">or</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 实时业务运行主程序</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            tag_time: 当前时间戳。</span>
+<span class="sd">        </span>
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            fmt(str): 默认为 ``%Y%m%d%H``。日志文件保存的时间格式。</span>
+<span class="sd">            days(int): 默认为 ``7``。 日志保存的时长，单位为: day。</span>
+<span class="sd">            sleep_time(int): 默认为 ``60``。 当数据出现错误，循环等待的时间，单位为: s。</span>
+<span class="sd">            delay(timedelta): 默认为 ``20``。 根据tag_time，延迟检验的时间，单位为: min。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 从每日00时开始</span>
+        <span class="k">if</span> <span class="n">tag_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tag_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">00&quot;</span><span class="p">),</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Keyword Args</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fmt&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H&quot;</span><span class="p">)</span>                 <span class="c1"># 日志文件名格式</span>
+        <span class="n">days</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;days&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>                        <span class="c1"># 删除历史文件的天数</span>
+        <span class="n">sleep_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sleep_time&quot;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>           <span class="c1"># 错误运行，休息时间（秒数）</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delay&quot;</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>  <span class="c1"># 延迟检验时间</span>
+        
+        <span class="c1"># 需要删除的旧日志</span>
+        <span class="n">old_time</span> <span class="o">=</span> <span class="n">tag_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_log</span><span class="p">(</span><span class="n">tag_time</span><span class="o">=</span><span class="n">tag_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt</span><span class="p">),</span> <span class="n">old_time</span><span class="o">=</span><span class="n">old_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span>
+        
+        <span class="n">st</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">now_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">delay</span>                  <span class="c1"># 需计算数据延迟时间</span>
+        <span class="n">Log</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;TAG Time : </span><span class="si">{</span><span class="n">tag_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># tag_time的业务开始</span>
+        <span class="k">if</span> <span class="n">now_time</span> <span class="o">&lt;</span> <span class="n">tag_time</span><span class="p">:</span>
+            <span class="c1"># 当前实际时间还未到tag_time时，进入休眠等待</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">tag_time</span> <span class="o">-</span> <span class="n">now_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Sleeping...</span><span class="si">{</span><span class="n">delta</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+            
+        <span class="c1"># 每次新的tag_time，需要重置计数器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># tag_time的业务循环，至到正常运行检验评估(evaluate)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">tag_time</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Cost: </span><span class="si">{</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">st</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Cost: </span><span class="si">{</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">st</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
+        <span class="n">Log</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">  --&gt; Done!&quot;</span><span class="p">)</span>   <span class="c1"># tag_time的业务结束</span></div>
+    
+<div class="viewcode-block" id="BaseProdEvaluate.transform_time"><a class="viewcode-back" href="../../../generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate.transform_time">[文档]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform_time</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rollback</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 时区转化</span>
+<span class="sd">        </span>
+<span class="sd">        当前仅支持基于世界时(UTC)的转化和逆转化。</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            time: 时间戳，UTC。</span>
+<span class="sd">            timezone: 时区名称</span>
+<span class="sd">            rollback: 默认为 ``False``。是否由 :obj:`timezone` 回滚为世界时。True, 逆转化为UTC。False, 转化为 :obj:`timezone`。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            转化为 :obj:`timezone` 的时间</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">rollback</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">timezone</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;CST&quot;</span><span class="p">,</span> <span class="s2">&quot;BJS&quot;</span><span class="p">]:</span>
+            <span class="c1"># UTC &lt;-&gt; 北京时</span>
+            <span class="k">return</span> <span class="n">time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">flag</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">timezone</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;UTC&quot;</span><span class="p">,</span> <span class="s2">&quot;GMT&quot;</span><span class="p">]:</span>
+            <span class="c1"># UTC</span>
+            <span class="k">return</span> <span class="n">time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time zone - </span><span class="si">{</span><span class="n">timezone</span><span class="si">}</span><span class="s2"> has not implemented yet!&quot;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="BaseProdEvaluate.evaluate"><a class="viewcode-back" href="../../../generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate.evaluate">[文档]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">truth_file</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">test_file</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 产品评估检验</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_time : 当前时间</span>
+<span class="sd">            truth_file : 真值数据信息。参数信息关键字参考CMAE config。</span>
+<span class="sd">            test_file : 待测数据信息。参数信息关键字参考CMAE config。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            是否正常完成评估。True 正常完成评估; False 未正常完成评估，或因路径错误。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="DataReader"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader">[文档]</a><span class="k">class</span> <span class="nc">DataReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 格点数据读取器</span>
+
+<span class="sd">    面向对象，读取目标数据(:obj:`path`)、目标范围(:obj:`General` 或 :obj:`extent`)和目标变量(:obj:`vnames`)的格点数据值。</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        GRIBDICT(dict): 用于选取GRIB变量数据的关键信息。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">GRIBDICT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">PRE_1h</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Total precipitation&quot;</span><span class="p">),</span>
+                    <span class="n">rain</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Total precipitation&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="n">tp</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Total precipitation&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;accum&quot;</span><span class="p">),</span>
+                    <span class="n">tem</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="n">sp</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="n">rhu</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;Relative humidity&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="n">u</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;u-component of wind&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="n">v</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">parameterName</span><span class="o">=</span><span class="s2">&quot;v-component of wind&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stepType</span><span class="o">=</span><span class="s2">&quot;instant&quot;</span><span class="p">),</span>
+                    <span class="p">)</span>
+    
+<div class="viewcode-block" id="DataReader.catch"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.catch">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">catch</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">lead_time</span><span class="p">:</span> <span class="n">timedelta</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 抓取目标数据路径</span>
+
+<span class="sd">        根据时间(nowtime)、预报时效(lead_time)和文件路径规则(file)抓取目标路径</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time: 当前时间</span>
+<span class="sd">            lead_time: 预报时长</span>
+<span class="sd">            file: 数据路径规则</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            目标数据路径</span>
+
+<span class="sd">        Exampls:</span>
+
+
+<span class="sd">            &gt;&gt;&gt; from datetime import datetime, timedelta</span>
+<span class="sd">            &gt;&gt;&gt; tag_time = datetime(year=2022, month=7, day=2, hour=4)   # 目标时间</span>
+<span class="sd">            &gt;&gt;&gt; file1 = &quot;/mnt/PRESKY/data/cmadata/NAFP/CMPAS_GRIB/%Y/%Y%m/%Y%m%d/*%Y%m%d%H.GRB2&quot;</span>
+<span class="sd">            &gt;&gt;&gt; file2 = &quot;~/product/FCST/SZW_1000M/F_RADA_FCST_03H_DL/%Y%m%d/F_RADA_FCST_03H_DL_SZW_1000M_%Y%m%d%H%M_%Y%m%d%H%M.nc&quot;</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; # 抓取实况时间为 2022年7月2日5时，文件路径规则为file1的实况数据</span>
+<span class="sd">            &gt;&gt;&gt;path1 = DataReader.catch(time=tag_time + timedelta(hours=1), lead_time=None, file=file1)</span>
+<span class="sd">            &gt;&gt;&gt; # 抓取起报时间为2022年7月2日4时，预报时间为2022年7月2日5时（预报时效为1小时），文件路径规则为file2的预报产品数据</span>
+<span class="sd">            &gt;&gt;&gt; path2 = DataReader.catch(time=tag_time, lead_time=timedelta(hours=1), file=file2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># 模糊匹配</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">lead_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt;Status: </span><span class="si">{</span><span class="n">Status</span><span class="o">.</span><span class="n">Abnormal</span><span class="si">}</span><span class="s2">  -- &quot;</span>
+                                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2"> ftime is exists!&quot;</span><span class="p">)</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_ctime</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 根据文件修改时间进行排序</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># 返回最新修改时间的模糊匹配文件</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 精准匹配</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;{:0\dd}&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lead_time</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+                <span class="c1"># 匹配模式文件名包含预报时长小时数的文件路径</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">lead_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">))</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">merge_file</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">lead_time</span><span class="o">=</span><span class="n">lead_time</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span></div>
+    
+<div class="viewcode-block" id="DataReader.load"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.load">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span> <span class="n">vnames</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 加载格点数据</span>
+
+<span class="sd">        根据数据路径(path)，所需读取变量列表(vnames)，及其他参数——包括，经纬度精度(acc)、落区范围(extend)、 grib2变量名称(gribdict)读取目标数据</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path : 原始数据/产品路径。</span>
+<span class="sd">            vnames : 待读取的变量名称列表。</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            acc(int): 默认为 ``2``。读取经纬度的保留小数精度。</span>
+<span class="sd">            extend(dict): 默认为 ``General`` 参数。产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成。</span>
+<span class="sd">            gribdict(dict): 默认为 ``None``。需补充的GIRB2数据变量选取参数，用于select方法。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            含格点数据的容器</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; path1, path2 = &quot;./././path1&quot;, &quot;./././path2&quot;</span>
+<span class="sd">            &gt;&gt;&gt; pre_dict = dict(PRE_1h=dict(parameterName=&quot;Total precipitation&quot;))</span>
+<span class="sd">            &gt;&gt;&gt; cmpas = DataReader.load(path=path1, vnames=[&quot;PRE_1h&quot;], gribdict=pre_dict)    # 读取CMPAS实况数据</span>
+<span class="sd">            &gt;&gt;&gt; qpf = DataReader.load(path=path2, vnames=[&quot;PRE_1h&quot;], acc=2)                  # 读取QPF-DL预报产品数据</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 若数据路径不存在，则返回空容器</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+        
+        <span class="n">error</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="s2">&quot;extend&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extend&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># 若传入经纬度范围，则更新传入经纬度范围</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="n">Extend</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;extend&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 若未传入经纬度范围，则默认为config.General 的经纬度范围</span>
+            <span class="n">extend</span> <span class="o">=</span> <span class="n">Extend</span><span class="p">(</span><span class="n">slat</span><span class="o">=</span><span class="n">General</span><span class="o">.</span><span class="n">SLAT</span><span class="p">,</span> <span class="n">slon</span><span class="o">=</span><span class="n">General</span><span class="o">.</span><span class="n">SLON</span><span class="p">,</span> <span class="n">elat</span><span class="o">=</span><span class="n">General</span><span class="o">.</span><span class="n">ELAT</span><span class="p">,</span> <span class="n">elon</span><span class="o">=</span><span class="n">General</span><span class="o">.</span><span class="n">ELON</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span> <span class="p">)</span>
+        
+        <span class="c1"># 若基类GRIB2字典表不包含提取变量的关键信息，则传入更新</span>
+        <span class="k">if</span> <span class="s2">&quot;gribdict&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gribdict&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">GRIBDICT</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;gribdict&quot;</span><span class="p">))</span>
+        
+        <span class="c1"># 选择格点数据读取方式</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.nc&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load_nc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">vnames</span><span class="p">,</span> <span class="n">extend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.grb2&quot;</span><span class="p">,</span> <span class="s2">&quot;.bin&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load_grb</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">vnames</span><span class="p">,</span> <span class="n">extend</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="DataReader.load_nc"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.load_nc">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_nc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span> <span class="n">vnames</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="n">Extend</span><span class="p">,</span>
+                <span class="n">name_Lon</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Lon&quot;</span><span class="p">,</span> <span class="n">name_Lat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Lat&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;NC格式数据的读取。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: 原始数据/产品路径。</span>
+<span class="sd">            vnames: 待读取的变量名称列表。</span>
+<span class="sd">            extend: 产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成</span>
+<span class="sd">            name_Lon: 默认为 ``Lon``。经度坐标NC文件变量名称</span>
+<span class="sd">            name_Lat: 默认为 ``Lat``。纬度坐标NC文件变量名称</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            surface(bool): 是否为地面格点数据</span>
+<span class="sd">            name_Height(str): 默认为 ``Plev``。高度轴名称。仅当 :obj:`surface` 为 ``True`` 时可用。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            含NC格点数据的容器</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c1"># todo 多维NC数据的读取</span>
+        <span class="n">x_coord</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name_Lon</span><span class="p">][:]</span>
+        <span class="n">y_coord</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name_Lat</span><span class="p">][:]</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">extend</span><span class="o">.</span><span class="n">slon</span> <span class="o">&lt;=</span> <span class="n">x_coord</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x_coord</span> <span class="o">&lt;=</span> <span class="n">extend</span><span class="o">.</span><span class="n">elon</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">extend</span><span class="o">.</span><span class="n">slat</span> <span class="o">&lt;=</span> <span class="n">y_coord</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">y_coord</span> <span class="o">&lt;=</span> <span class="n">extend</span><span class="o">.</span><span class="n">elat</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">surface</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;surface&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># 当为高空格点数据时的前处理</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">surface</span><span class="p">:</span>
+            <span class="n">z_coord</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name_Height&quot;</span><span class="p">,</span> <span class="s2">&quot;Plev&quot;</span><span class="p">)]</span>
+            <span class="n">nz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">z_coord</span><span class="p">,</span> <span class="n">extend</span><span class="o">.</span><span class="n">plev</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nz</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># 存放坐标轴</span>
+        <span class="n">cntr</span> <span class="o">=</span> <span class="p">{</span><span class="n">name_Lon</span><span class="p">:</span> <span class="n">x_coord</span><span class="p">[</span><span class="n">nx</span><span class="p">],</span> <span class="n">name_Lat</span><span class="p">:</span> <span class="n">y_coord</span><span class="p">[</span><span class="n">ny</span><span class="p">]}</span>
+        <span class="k">for</span> <span class="n">vname</span> <span class="ow">in</span> <span class="n">vnames</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vname</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">surface</span><span class="p">:</span>
+                    <span class="n">cntr</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">vname</span><span class="p">][</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cntr</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">vname</span><span class="p">][</span><span class="n">nz</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cntr</span></div>
+    
+<div class="viewcode-block" id="DataReader.load_grb"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.load_grb">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_grb</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span> <span class="n">vnames</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="n">Extend</span><span class="p">,</span>
+                 <span class="n">name_Lon</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Lon&quot;</span><span class="p">,</span> <span class="n">name_Lat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Lat&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;GRIB格式数据的读取。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: 原始数据/产品路径。</span>
+<span class="sd">            vnames: 待读取的变量名称列表。</span>
+<span class="sd">            extend: 产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成</span>
+<span class="sd">            name_Lon: 默认为 ``Lon``。经度坐标NC文件变量名称</span>
+<span class="sd">            name_Lat: 默认为 ``Lat``。纬度坐标NC文件变量名称</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            surface(bool): 是否为地面格点数据</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            含GRIB格点数据的容器</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">surface</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;surface&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">surface</span><span class="p">:</span>
+            <span class="c1"># todo GRIB2 格式数据暂不支持3-D 格点读取</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading upar GRIB2 data have not implemented yet!&quot;</span><span class="p">)</span>
+        <span class="n">cntr</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">pygrib</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">vname</span> <span class="ow">in</span> <span class="n">vnames</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">**</span><span class="bp">cls</span><span class="o">.</span><span class="n">GRIBDICT</span><span class="p">[</span><span class="n">vname</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="ne">Warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt; GRIB DATA have more than one message of </span><span class="si">{</span><span class="n">vname</span><span class="si">}</span><span class="s2">!!!&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="ne">Warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;&gt;&gt; GRIB DATA have no one message of </span><span class="si">{</span><span class="n">vname</span><span class="si">}</span><span class="s2">!!!&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">lat1</span><span class="o">=</span><span class="n">extend</span><span class="o">.</span><span class="n">slat</span><span class="p">,</span> <span class="n">lon1</span><span class="o">=</span><span class="n">extend</span><span class="o">.</span><span class="n">slon</span><span class="p">,</span>
+                                              <span class="n">lat2</span><span class="o">=</span><span class="n">extend</span><span class="o">.</span><span class="n">elat</span><span class="p">,</span> <span class="n">lon2</span><span class="o">=</span><span class="n">extend</span><span class="o">.</span><span class="n">elon</span><span class="p">)</span>
+                <span class="n">cntr</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="c1"># 当不从数据中读取坐标信息且数据容器中不包含坐标信息时，存放坐标信息</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name_Lon</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vnames</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">name_Lon</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cntr</span><span class="p">):</span>
+                    <span class="n">cntr</span><span class="p">[</span><span class="n">name_Lon</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name_Lat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vnames</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">name_Lat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cntr</span><span class="p">):</span>
+                    <span class="n">cntr</span><span class="p">[</span><span class="n">name_Lat</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
+        <span class="k">return</span> <span class="n">cntr</span></div>
+    
+<div class="viewcode-block" id="DataReader.merge_file"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.merge_file">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">merge_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">lead_time</span><span class="p">:</span> <span class="n">timedelta</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;组合预测数据的文件名(启报时间、预报时间)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time: 起报时间时间</span>
+<span class="sd">            lead_time: 预报时长</span>
+<span class="sd">            file: 数据路径规则</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            文件名称</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lead_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 若预报时长为None，则为实况数据</span>
+            <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 若预报时长非None，则视time为起报时间</span>
+            <span class="n">file_split_1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">file_split_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span> <span class="o">+</span> <span class="n">lead_time</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">file_split_1</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">file_split_2</span>
+            <span class="k">return</span> <span class="n">file</span></div>
+    
+<div class="viewcode-block" id="DataReader.read"><a class="viewcode-back" href="../../../generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader.read">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">vnames</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;基于时间、变量名和文件规则读取相应的数据。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time: 目标时间</span>
+<span class="sd">            vnames: 变量名列表</span>
+<span class="sd">            file: 数据路径规则</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            lead_time(timedelta): 默认为 ``None``。预报时长</span>
+<span class="sd">            acc(int): 默认为 ``2``。经纬度坐标的读取精度。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            含格点数据的容器</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 抓取文件路径</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">catch</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">lead_time</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lead_time&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        
+        <span class="c1"># 边界经纬度</span>
+        <span class="n">cntr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">vnames</span><span class="o">=</span><span class="n">vnames</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cntr</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

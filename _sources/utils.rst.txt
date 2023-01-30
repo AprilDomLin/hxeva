@@ -1,0 +1,19 @@
+.. role:: hidden
+    :class: hidden-section
+
+
+.. currentmodule:: hxeva.utils.met
+
+气象学计算
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    calc_dis 
+    calc_rhu 
+    dewind 
+    comwind
+
+

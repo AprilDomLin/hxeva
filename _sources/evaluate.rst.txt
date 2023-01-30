@@ -1,0 +1,88 @@
+.. role:: hidden
+    :class: hidden-section
+
+
+.. currentmodule:: hxeva.evaluate.base
+
+检验评估指标基础模块
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    BaseEvaluate
+
+
+.. currentmodule:: hxeva.evaluate.scores
+
+评分检验
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    Score
+    calc_acc
+    calc_bias
+    calc_ets
+    calc_far
+    calc_hss
+    calc_po
+    calc_pod
+    calc_ra
+    calc_rd
+    calc_sr
+    calc_ts
+    ContingencyTable
+
+
+.. currentmodule:: hxeva.evaluate.space
+
+空间检验
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    Space
+    calc_S
+    calc_A
+    calc_L
+    Property
+
+
+.. currentmodule:: hxeva.evaluate.stats
+
+统计误差检验
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    calc_cc
+    calc_mae
+    calc_mbe
+    calc_mpe
+    calc_mbr
+    calc_mape
+    calc_nse
+    calc_rmse
+    Stats
+
+
+.. currentmodule:: hxeva.evaluate.wind
+
+风场检验
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    Wind
+    WindSpeed
+    WindDirection

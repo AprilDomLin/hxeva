@@ -1,0 +1,32 @@
+.. hxeva documentation file, created by fang linwanghao
+   sphinx-quickstart on Thu Dec  1 12:44:57 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+其他
+=================================
+
+参考文献
+---------------------------
+
+`[1] Wernli, H., Paulat, M., Hagen, M., & Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.`__
+
+.. __: https://github.com/AprilDomLin/hxeva/blob/main/_scr/ref/SAL.pdf
+
+
+更新说明
+---------------------------
+
++------------+--------------+-----------+
+| 更新时间   | 更新内容     | 负责人    |
++============+==============+===========+
+| 2023.01.30 | docs文档修改 | 方璘王昊  |
++------------+--------------+-----------+
+
+
+开发团队
+---------------------------
+- 方璘王昊
+- 叶先才
+- 苏睿恒

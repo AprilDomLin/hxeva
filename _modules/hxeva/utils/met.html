@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hxeva.utils.met &mdash; hxeva 0.1.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#id2">检验评估体系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">API文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id1">索引与列表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>hxeva.utils.met</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>hxeva.utils.met 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">@Version    :</span>
+<span class="sd">@Function   :</span>
+<span class="sd">@Author     : Frank</span>
+<span class="sd">@Contact    : fanglwh@outlook.com</span>
+<span class="sd">@Date       : 2022/11/21   18:09</span>
+<span class="sd">@Tool       : PyCharm</span>
+<span class="sd">@File       : met.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;calc_dis&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_rhu&quot;</span><span class="p">,</span> <span class="s2">&quot;dewind&quot;</span><span class="p">,</span> <span class="s2">&quot;comwind&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="calc_dis"><a class="viewcode-back" href="../../../generated/hxeva.utils.met.calc_dis.html#hxeva.utils.met.calc_dis">[文档]</a><span class="k">def</span> <span class="nf">calc_dis</span><span class="p">(</span><span class="n">x1</span><span class="p">:</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+             <span class="n">x2</span><span class="p">:</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">float</span> <span class="ow">or</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;欧式距离</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`Distance = \\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}`</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        x1 : 起点的 x轴/横向 坐标值</span>
+<span class="sd">        y1 : 起点的 y轴/纵向 坐标值</span>
+<span class="sd">        x2 : 终点的 x轴/横向 坐标值</span>
+<span class="sd">        y2 : 终点的 y轴/纵向 坐标值</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        欧式距离</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calc_rhu"><a class="viewcode-back" href="../../../generated/hxeva.utils.met.calc_rhu.html#hxeva.utils.met.calc_rhu">[文档]</a><span class="k">def</span> <span class="nf">calc_rhu</span><span class="p">(</span><span class="n">tmp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dpt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 计算空气相对湿度</span>
+<span class="sd">    </span>
+<span class="sd">    基于温度(K)和露点温度(K)计算空气的相对湿度。无量纲，理论值域范围为0 ~ 1。</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`rhu = \\exp{(17.67 * (dpt - 273.15) / (dpt - 29.65) - 17.67 * (tmp - 273.15) / (tmp - 29.65))}`</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        tmp : Temperature, unit: K</span>
+<span class="sd">        dpt : DewPoint Temperature, unit: K</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        空气相对湿度</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">17.67</span> <span class="o">*</span> <span class="p">(</span><span class="n">dpt</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">dpt</span> <span class="o">-</span> <span class="mf">29.65</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">17.67</span> <span class="o">*</span> <span class="p">(</span><span class="n">tmp</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">tmp</span> <span class="o">-</span> <span class="mf">29.65</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dewind"><a class="viewcode-back" href="../../../generated/hxeva.utils.met.dewind.html#hxeva.utils.met.dewind">[文档]</a><span class="k">def</span> <span class="nf">dewind</span><span class="p">(</span><span class="n">ws</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">,</span> <span class="n">wd</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 风场(正交)分解</span>
+<span class="sd">    </span>
+<span class="sd">    将风速和风向分解为 u / v 风。</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ws : 风速值, 单位为 m/s</span>
+<span class="sd">        wd : 风向值, 单位为 °</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        u风(矢量) 和 v风(矢量)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">ws</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">360</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">ws</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">wd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">360</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="comwind"><a class="viewcode-back" href="../../../generated/hxeva.utils.met.comwind.html#hxeva.utils.met.comwind">[文档]</a><span class="k">def</span> <span class="nf">comwind</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 合成风场</span>
+<span class="sd">    </span>
+<span class="sd">    由 u / v  风，合成风速和风向</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        u : u风, 单位为 m/s</span>
+<span class="sd">        v : v风, 单位为 m/s</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        风速(单位: m/s) 和 风向(单位: °)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">u</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">wd</span> <span class="o">=</span> <span class="mf">270.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">wd</span> <span class="o">=</span> <span class="n">wd</span> <span class="o">%</span> <span class="mf">360.0</span>
+    <span class="k">return</span> <span class="n">ws</span><span class="p">,</span> <span class="n">wd</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
