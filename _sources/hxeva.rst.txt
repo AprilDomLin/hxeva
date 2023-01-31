@@ -11,8 +11,6 @@ API文档
    utils
 
 
-索引与列表
-==================
 
 * :ref:`genindex`
-* :ref:`modindex`
+* :ref:`search`

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>hxeva.product.radaprehorfcst &mdash; hxeva 0.1.0 文档</title>
+  <title>hxeva.product.radaprehorfcst &mdash; hxeva 0.2.0 文档</title>
   
 
   
@@ -81,10 +81,9 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">目录:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#id2">检验评估体系</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">API文档</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id1">索引与列表</a></li>
@@ -285,6 +284,7 @@
             
             <span class="c1"># 初始化检验产品文件，保证每次运行，都不向已存在文件追加结果，防止记录重复结果。</span>
             <span class="n">ts_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DataReader</span><span class="o">.</span><span class="n">merge_file</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tag_time</span><span class="p">,</span> <span class="n">lead_time</span><span class="o">=</span><span class="n">lead_time</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">save</span><span class="p">[</span><span class="s2">&quot;ts&quot;</span><span class="p">]))</span>
+            <span class="n">ts_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ts_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="n">stats_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DataReader</span><span class="o">.</span><span class="n">merge_file</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tag_time</span><span class="p">,</span> <span class="n">lead_time</span><span class="o">=</span><span class="n">lead_time</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">save</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">]))</span>

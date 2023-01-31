@@ -9,8 +9,177 @@
 业务使用示例
 ---------------------------
 
-【暂无】
+业务需求和评估逻辑与hxeva产品检验评估参考类相同
+``````````````````````````````````````````````````````````````````````````````````
 
+以QPF格点检验为例，首先实例化相应产品类，修改业务参数后调用评估主进程main::
+
+    # python file : qpf.py
+
+    from datetime import timedelta
+    from hxeva import RadaPreHorFcstGrid
+
+    # 传入基本参数，检验区域可通过修改extend经纬度范围完成限制
+    model = RadaPreHorFcstGrid(name="RADA_PRE_HOR_03H_GRID", extend=dict(slat=18.91, slon=108.43, elat=26.88, elon=118.83))
+
+    # 真值数据参数 (以GIRB2 格式的 CMPAS为例)
+    truth_file = {"file": "~/data/CMPAS_GRIB/%Y/%Y%m/%Y%m%d/*-%Y%m%d%H.GRB2",       # 数据路径匹配规则
+                  "timezone": "CTS",                                                # 数据时制
+                  "name_Lat": "Lat",                                                # 数据纬度变量名称
+                  "name_Lon": "Lon",                                                # 数据经度变量名称
+                  }
+
+    # 待评估数据参数
+    test_file = {"file": "~/product/FCST/SZW_1000M/F_RADA_FCST_03H_DL/%Y%m%d/%Y%m%d%H%M_%Y%m%d%H%M.nc",       # 数据路径匹配规则
+                 "timezone": "UTC",                                                                           # 数据时制
+                 "name_Lat": "Lat",                                                                           # 数据纬度变量名称
+                 "name_Lon": "Lon",                                                                           # 数据经度变量名称
+                 }
+
+    # 检验配置参数
+    qpe_config = {"file": "~/product/CHECK/RADA_PRE_HOR_03H_GRID/%Y%m%d/%Y%m%d%H",  # 保存路径规则
+                  "timefcst": [timedelta(hours=hour) for hour in range(2, 0, -1)],  # 预报时效列表
+                  "key": "PRE_1h"                                                   # 变量关键字名称
+                  }
+    # 修改业务化参数
+    # tag_time=None : 每次启动时，自动获取服务器的当前时间
+    # fmt="%Y%m%d%H" : 日志保存格式，例如为 2023013018.log
+    # days=3 : 仅保存3天以内的日志
+    # sleep_time=10 : 当出现意外错误，每次循环等待10s，以排除文件延迟到达波动的情况
+    # delay=15 : 延迟15min检验，例如18时15分开始检验18时起报的产品，主要解决实况资料和产品数据的延迟情况(根据实际情况修改). !!!若业务时效需求较高，则不能用此方法!!!
+    model.main(tag_time=None, fmt="%Y%m%d%H", days=3, sleep_time=10, delay=15)
+
+将.py文件加入crontab定时任务即可。
+
+
+
+独特业务需求，与参考类逻辑不同，但主题业务逻辑相同
+``````````````````````````````````````````````````````````````````````````````````
+
+仍以QPF格点检验为例，首先继承BaseProdEvaluate，根据业务需求修改evaluate方法，然后调用评估主进程main::
+
+    # python file : qpf.py
+
+    from abc import ABC
+    from datetime import timedelta
+    from hxeva import BaseProdEvaluate
+
+    # 传入基本参数，检验区域可通过修改extend经纬度范围完成限制
+    class QPFGridNew(BaseProdEvaluate, ABC):
+        def __init__(self, name="RADA_PRE_HOR_03H_GRID", log_root="./logs", extend=None):
+           super(QPFGridNew, self).__init__(name=name, log_root=log_root)
+           if isinstance(extend, dict):
+               General.SLAT = extend["slat"]
+               General.SLON = extend["slon"]
+               General.ELAT = extend["elat"]
+               General.ELON = extend["elon"]
+
+        def evaluate(tag_time, truth_file, test_file, **kwargs):
+                    # Keyword Args
+        save = kwargs.pop("file")
+        timefcst = kwargs.pop("timefcst")
+        key = kwargs.get("key", "PRE_1h")
+        threshold = kwargs.get("threshold", [0, 0.1, 2.5, 8.0, 16.0, 150])
+        code = kwargs.get("code", "RADA_PRE_HOR_03H_GRID")
+        max_counter = kwargs.get("max_counter", 10)
+
+        for lead_time in timefcst:
+            fcst_time = tag_time + lead_time
+            #  读取 truth 数据 >>> UTC
+            path = Path(DataReader.catch(time=self.transform_time(fcst_time, timezone=truth_file["timezone"]),
+                                         lead_time=None, file=truth_file["file"], ))
+            if path.exists():
+                Log.info(self.logger, f"Success catch the CMPAS Data: {path}")
+            elif self.counter <= max_counter:
+                Log.warning(self.logger, f"CMPAS Data is missing, {path}!!!")
+                return False
+            else:
+                Log.warning(self.logger, f"CMPAS Data is missing, {path}!!!   !!!And go on evaluate...!!!")
+            truth = DataReader.load(path, vnames=[key],
+                                    name_Lat=truth_file["name_Lat"], name_Lon=truth_file["name_Lon"])
+
+            #  读取 test 数据 >>> UTC
+            path = Path(DataReader.catch(time=self.transform_time(tag_time, timezone=test_file["timezone"]),
+                                         lead_time=lead_time, file=test_file["file"]))
+            if path.exists():
+                Log.info(self.logger, f"Success catch the QPF Product: {path}")
+            elif self.counter <= max_counter:
+                Log.warning(self.logger, f"QPF Product is missing, {path}!!!")
+                return False
+            else:
+                Log.warning(self.logger, f"QPF Product is missing, {path}!!!   !!!And go on evaluate...!!!")
+            test = DataReader.load(path, vnames=[key],
+                                   name_Lat=test_file["name_Lat"], name_Lon=test_file["name_Lon"])
+
+            # Evaluate
+            # 初始化检验产品文件，保证每次运行，都不向已存在文件追加结果，防止记录重复结果。
+            ts_path = Path(DataReader.merge_file(time=tag_time, lead_time=lead_time, file=save["ts"]))
+            ts_path.mkdir(parents=True, exist_ok=True)
+            stats_path = Path(DataReader.merge_file(time=tag_time, lead_time=lead_time, file=save["stats"]))
+            stats_path.mkdir(parents=True, exist_ok=True)
+
+            # TS 评分
+            names = ["TS", "PO", "POD", "FAR", "ETS"]
+            # init result
+            exist_flag &= np.where((truth[key] == Default.MissValue) & (test[key] == Default.MissValue),
+                                   False, True)
+            res = dict(stime=tag_time.strftime("%Y%m%d%H%M"), ftime=fcst_time.strftime("%Y%m%d%H%M"),
+                       qxName=col.dsName, area=area, type=code, method="TS")
+            for lvl in Default.RainLevel.values():
+                for name in names:
+                    res[f"{lvl}_{name}"] = Default.MissValue
+            # evaluate
+            tmp = Score.scores(truth=truth[key], test=test[key], exist_flag=exist_flag,
+                               threshold=threshold, names=names)
+            for key, lvl in Default.RainLevel.items():
+                for name in names:
+                    res[f"{lvl}_{name}"] = tmp[key][name]
+            with open(ts_path, "w", encoding="utf8") as fp:
+                fp.write(json.dumps(res, ensure_ascii=False) + "\n")
+
+            # Stats 评分
+            names = ["RMSE", "MAE"]
+            # init result
+            res = dict(stime=tag_time.strftime("%Y%m%d%H%M"), ftime=fcst_time.strftime("%Y%m%d%H%M"),
+                       qxName=col.dsName, area=area, type=code, method="STATISTIC")
+            # evaluate
+            for name in names:
+                res[name] = Default.MissValue
+            tmp = Stats.stats(truth=truth[key], test=test[key], exist_flag=exist_flag, amin=0, amax=150, names=names)
+            for name in names:
+                res[name] = tmp[name]
+            with open(stats_path, "w", encoding="utf8") as fp:
+                fp.write(json.dumps(res, ensure_ascii=False) + "\n")
+            Log.info(self.logger, f">>>TS Check Result: {ts_path}")
+            Log.info(self.logger, f">>>STATISTIC Check Result: {stats_path}")
+        return True
+
+
+    model = QPFGridNew(name="RADA_PRE_HOR_03H_GRID", extend=dict(slat=18.91, slon=108.43, elat=26.88, elon=118.83))
+
+    # 真值数据参数 (以GIRB2 格式的 CMPAS为例)
+    truth_file = {"file": "~/data/CMPAS_GRIB/%Y/%Y%m/%Y%m%d/*-%Y%m%d%H.GRB2",       # 数据路径匹配规则
+                  "timezone": "CTS",                                                # 数据时制
+                  "name_Lat": "Lat",                                                # 数据纬度变量名称
+                  "name_Lon": "Lon",                                                # 数据经度变量名称
+                  }
+
+    # 待评估数据参数
+    test_file = {"file": "~/product/FCST/SZW_1000M/F_RADA_FCST_03H_DL/%Y%m%d/%Y%m%d%H%M_%Y%m%d%H%M.nc",       # 数据路径匹配规则
+                 "timezone": "UTC",                                                                           # 数据时制
+                 "name_Lat": "Lat",                                                                           # 数据纬度变量名称
+                 "name_Lon": "Lon",                                                                           # 数据经度变量名称
+                 }
+
+    # 检验配置参数
+    qpe_config = {"file": "~/product/CHECK/RADA_PRE_HOR_03H_GRID/%Y%m%d/%Y%m%d%H",  # 保存路径规则
+                  "timefcst": [timedelta(hours=hour) for hour in range(2, 0, -1)],  # 预报时效列表
+                  "key": "PRE_1h"                                                   # 变量关键字名称
+                  }
+    # 修改业务化参数
+    model.main(tag_time=None, fmt="%Y%m%d%H", days=3, sleep_time=10, delay=15)
+
+将.py文件加入crontab定时任务即可。
 
 CMAE接口示例
 ---------------------------
@@ -25,7 +194,7 @@ CMAE接口示例
 
 
 数据读取
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`````````````````````````````````````````````````
 读取实况数据(做为truth)和预报数据(做为test)::
 
     from netCDF4 import Dataset
@@ -39,7 +208,7 @@ CMAE接口示例
     fcst = tmp.variables["pre_3h"][:] * 1000
 
 评分检验
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`````````````````````````````````````````````````
 ::
 
     from hxeva import Score
@@ -61,7 +230,7 @@ CMAE接口示例
     >>> Scores Calculated Done! Result has been saved in "./scores.csv"!
 
 误差检验
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`````````````````````````````````````````````````
 ::
 
     from hxeva import Stats
@@ -80,7 +249,7 @@ CMAE接口示例
     >>>Statistics Calculated Done! Result has been saved in "./stats.csv"!
 
 SAL空间检验
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`````````````````````````````````````````````````
 ::
 
     from hxeva import Space

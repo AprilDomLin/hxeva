@@ -8,16 +8,13 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: 目录:
 
    introduction
    usage
    hxeva
    others
 
-索引与表格
-==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
