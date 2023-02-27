@@ -107,7 +107,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -253,12 +252,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slat</strong> (<em>float</em>) – 起始纬度。</p></li>
-<li><p><strong>elat</strong> (<em>float</em>) – 起始径度。</p></li>
-<li><p><strong>slon</strong> (<em>float</em>) – 结束纬度。</p></li>
-<li><p><strong>elon</strong> (<em>float</em>) – 结束经度。</p></li>
+<li><p><strong>slat</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 起始纬度。</p></li>
+<li><p><strong>elat</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 起始径度。</p></li>
+<li><p><strong>slon</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 结束纬度。</p></li>
+<li><p><strong>elon</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 结束经度。</p></li>
 <li><p><strong>error</strong> (<em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0.05</span></code>。经纬度误差。</p></li>
-<li><p><strong>plev</strong> (<em>list</em><em> or </em><em>float</em><em> or </em><em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。气压高度层</p></li>
+<li><p><strong>plev</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>list</em><em>, </em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。气压高度层</p></li>
 </ul>
 </dd>
 </dl>

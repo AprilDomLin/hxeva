@@ -88,10 +88,12 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">简介</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">使用示例</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hxeva.html">API文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">其他</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">参考文献</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">更新说明</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">更新说明</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#v-0-3-0">v 0.3.0</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#id5">开发团队</a></li>
 </ul>
 </li>
@@ -189,6 +191,17 @@
 </tr>
 </tbody>
 </table>
+<section id="v-0-3-0">
+<h3>v 0.3.0<a class="headerlink" href="#v-0-3-0" title="永久链接至标题">¶</a></h3>
+<p>1. 添加双偏正雷达基数据评估检验方法。包括雷达反射率(Ref)、相关系数(Rho)、差分反射率因子(ZDR)、差分相移(PhiDP)、谱宽(W)和径向速度(V)的标准差计算，
+以及雷达反射率灵敏度的计算。</p>
+<ol class="arabic simple" start="2">
+<li><p>修改evaluate模块针对缺失值的标定，以np.nan替换原具体数值表示缺省。</p></li>
+<li><p>添加领域匹配(基于最大池化方法)检验方法。</p></li>
+<li><p>product模块产品业务修改，删除行政区域划分评估。</p></li>
+<li><p>完善docstring内容。</p></li>
+</ol>
+</section>
 </section>
 <section id="id5">
 <h2>开发团队<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>

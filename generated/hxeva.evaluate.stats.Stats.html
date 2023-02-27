@@ -113,7 +113,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -207,10 +206,9 @@
 </dd>
 <dt class="field-even">关键字参数</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>amin</strong> (<em>int</em><em> or </em><em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0</span></code>。数据最小边界值。</p></li>
 <li><p><strong>amax</strong> (<em>int</em><em> or </em><em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">999</span></code>。数据最大边界值。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 <li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;RMSE&quot;,</span> <span class="pre">&quot;MAE&quot;,</span> <span class="pre">&quot;MBE&quot;,</span> <span class="pre">&quot;MAPE&quot;,</span> <span class="pre">&quot;CC&quot;]</span></code>。需要计算的统计误差指标。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
 <li><p><strong>save_path</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">./stats.csv</span></code>。评分结果csv文件的保存路径。</p></li>
@@ -224,7 +222,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.cc">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">cc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.cc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.cc" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">cc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.cc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.cc" title="永久链接至目标">¶</a></dt>
 <dd><p>相关系数计算(Correlation Coefficient, CC or R2)</p>
 <p><span class="math notranslate nohighlight">\(CC = \frac{\sum{(truth_i - \overline{truth}) * (test_i - \overline{test})}}{\sqrt{\sum{(truth_i - \overline{truth})^2} * \sum{(test_i - \overline{test})^2}}}\)</span></p>
 <dl class="field-list simple">
@@ -233,7 +231,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -244,7 +241,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.mae">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mae"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mae" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mae"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mae" title="永久链接至目标">¶</a></dt>
 <dd><p>平均绝对误差(Mean Absolute Error, MAE)</p>
 <p><span class="math notranslate nohighlight">\(MAE = \frac{1}{N} * \sum{\left|{truth_i - test_i}\right|}\)</span></p>
 <dl class="field-list simple">
@@ -252,8 +249,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
-<li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
+<li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -264,7 +260,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.mape">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mape"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mape" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mape"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mape" title="永久链接至目标">¶</a></dt>
 <dd><p>平均绝对误差百分比(Mean Absolute Percentage Error, MAPE)</p>
 <p><span class="math notranslate nohighlight">\(MAPE = \frac{\frac{1}{N} * \sum{\left|{truth_i - test_i}\right|}}{\overline{truth}}\)</span></p>
 <dl class="field-list simple">
@@ -273,7 +269,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -284,7 +279,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.mbe">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mbe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mbe" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mbe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mbe" title="永久链接至目标">¶</a></dt>
 <dd><p>平均误差(Mean Bias Error, MBE)</p>
 <p><span class="math notranslate nohighlight">\(MBE = \frac{1}{N} * \sum{(truth_i - test_i)}\)</span></p>
 <dl class="field-list simple">
@@ -293,7 +288,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -304,7 +298,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.mbr">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mbr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mbr"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mbr" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mbr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mbr"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mbr" title="永久链接至目标">¶</a></dt>
 <dd><p>平均偏差比(Mean Bias Ratio, MBR)</p>
 <p><span class="math notranslate nohighlight">\(MBR = \frac{1}{N} * \sum{\frac{test_i}{truth_i}}\)</span></p>
 <dl class="field-list simple">
@@ -313,7 +307,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -324,7 +317,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.mpe">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mpe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mpe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mpe" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mpe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.mpe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.mpe" title="永久链接至目标">¶</a></dt>
 <dd><p>平均偏差百分比(Mean Percentage Error, MPE)</p>
 <p><span class="math notranslate nohighlight">\(MPE = \frac{\frac{1}{N} * \sum{(truth_i - test_i)}}{\frac{1}{N} * \sum{truth_i}}\)</span></p>
 <dl class="field-list simple">
@@ -333,7 +326,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -344,7 +336,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.nmae">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nmae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nmae"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nmae" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nmae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nmae"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nmae" title="永久链接至目标">¶</a></dt>
 <dd><p>规范化平均绝对偏差(Normalized Mean Absolute Error, NMAE)</p>
 <p><span class="math notranslate nohighlight">\(NMAE = \frac{\frac{1}{N} * \sum{\left|{test_i - truth_i}\right|}}{\overline{truth}}\)</span></p>
 <dl class="field-list simple">
@@ -353,7 +345,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -364,7 +355,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.nme">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nme"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nme" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nme"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nme" title="永久链接至目标">¶</a></dt>
 <dd><p>规范化平均偏差(Normalized Mean Error, NME)</p>
 <p><span class="math notranslate nohighlight">\(NME = \frac{\frac{1}{N} * \sum{(test_i - truth_i)}}{\overline{truth}}\)</span></p>
 <dl class="field-list simple">
@@ -373,7 +364,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -384,7 +374,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.nse">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">999</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nse"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nse" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">nse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">999</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.nse"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.nse" title="永久链接至目标">¶</a></dt>
 <dd><p>纳什效率系数(Nash–Sutcliffe efficiency score, NSE)</p>
 <p><span class="math notranslate nohighlight">\(NSE = 1 - \frac{\sum(truth_i - test_i)^2}{\sum{(truth_i - \overline{truth})^2}}\)</span></p>
 <dl class="field-list simple">
@@ -393,7 +383,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 <li><p><strong>limit</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">-999</span></code>。 NSE值最小值限制，防止数值过低导致溢出。</p></li>
 </ul>
 </dd>
@@ -405,7 +394,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.Stats.rmse">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">rmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.rmse"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.rmse" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">rmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#Stats.rmse"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.Stats.rmse" title="永久链接至目标">¶</a></dt>
 <dd><p>均方根误差计算(Root-Mean-Square Error, RMSE)</p>
 <p><span class="math notranslate nohighlight">\(RMSE = \sqrt{\frac{1}{N} * \sum{(truth_i - test_i) ^ 2}}\)</span></p>
 <dl class="field-list simple">
@@ -414,7 +403,6 @@
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>numpy.ndarray</em>) – 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -436,10 +424,9 @@
 </dd>
 <dt class="field-even">关键字参数</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>amin</strong> (<em>int</em><em> or </em><em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0</span></code>。数据最小边界值。</p></li>
 <li><p><strong>amax</strong> (<em>int</em><em> or </em><em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">999</span></code>。数据最大边界值。</p></li>
-<li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 <li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;RMSE&quot;,</span> <span class="pre">&quot;MAE&quot;,</span> <span class="pre">&quot;MBE&quot;,</span> <span class="pre">&quot;MAPE&quot;,</span> <span class="pre">&quot;CC&quot;]</span></code>。需要计算的统计误差指标。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
 </ul>

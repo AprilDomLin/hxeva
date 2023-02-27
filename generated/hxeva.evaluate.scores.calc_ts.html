@@ -117,7 +117,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -199,7 +198,7 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>TS评分。当无降水时，<cite>Default.NoneValue</cite>。当tables存在有-1 或 None值，则返回 <cite>Default.MissValue</cite>。</p>
+<dd class="field-even"><p>TS评分。当无对应等级分类时，返回 <cite>NaN</cite>。</p>
 </dd>
 </dl>
 </dd></dl>

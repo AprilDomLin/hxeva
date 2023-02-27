@@ -117,7 +117,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -199,7 +198,7 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>准确率 / 晴雨评分。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>准确率 / 晴雨评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>

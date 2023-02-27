@@ -117,7 +117,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -207,7 +206,7 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>准确率 / 晴雨评分。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>准确率 / 晴雨评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -222,7 +221,7 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>偏差值。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>偏差值。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -244,7 +243,7 @@
 <li><p><strong>level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
 <li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
 <li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
-<li><p><strong>n</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0</span></code>。领域匹配半径格点数目。</p></li>
+<li><p><strong>window_size</strong> (<em>tuple</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
 <li><p><strong>save_path</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">./scores.csv</span></code>。评分结果csv文件的保存路径。</p></li>
 </ul>
@@ -254,7 +253,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.classify">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">classify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.classify"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.classify" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">classify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.classify"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.classify" title="永久链接至目标">¶</a></dt>
 <dd><p>基于联列表讲数据分为 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>、<code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code>、<code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
@@ -339,10 +338,10 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组 或 转变数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组 或 转变数组</p></li>
-<li><p><strong>level</strong> (<em>int</em>) – 分类等级</p></li>
+<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – 分类等级</p></li>
 <li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code> 。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
-<li><p><strong>n</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0</span></code> 。领域匹配半径格点数目。</p></li>
+<li><p><strong>window_size</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 领域匹配窗口直径格点数，若为None，则不进行领域匹配。 【注：当前仅支持 binary 二分类方法时使用】</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -361,21 +360,22 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>ETS技巧评分。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>ETS技巧评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.expand">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.expand"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.expand" title="永久链接至目标">¶</a></dt>
-<dd><p>模糊空间领域匹配。当前仅支持领域最大值的模糊空间匹配。</p>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(11,</span> <span class="pre">11)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.expand"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.expand" title="永久链接至目标">¶</a></dt>
+<dd><p>模糊空间领域匹配。</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 待模糊空间领域匹配的数组</p></li>
 <li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>n</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">5</span></code>。领域匹配的半径，为格点数而非距离或经纬度的度数。</p></li>
+<li><p><strong>window_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">11</span></code>。领域匹配的窗口直径格点数目，非距离长度或经纬度度数。</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">max</span></code>。领域匹配的方法， 仅支持 <code class="docutils literal notranslate"><span class="pre">max</span></code> 和 <code class="docutils literal notranslate"><span class="pre">mean</span></code> 两种。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -394,7 +394,7 @@
 <dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>空报率 / 误报率。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>空报率 / 误报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -407,10 +407,10 @@
 <p><span class="math notranslate nohighlight">\(HSS = \frac{tp + tn - expect}{tp + fp + fn + tn - expect}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>HSS技巧评分。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>HSS技巧评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -422,10 +422,10 @@
 <p><span class="math notranslate nohighlight">\(PO = \frac{fn}{tp + fn}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>漏报率。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>漏报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -437,10 +437,10 @@
 <p><span class="math notranslate nohighlight">\(PO = \frac{tp}{tp + fn}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>命中率。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>命中率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -452,8 +452,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>truth</strong> (<em>ndarray</em>) – 真实值数组</p></li>
-<li><p><strong>test</strong> (<em>ndarray</em>) – 待测试值数组</p></li>
+<li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
+<li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
 </ul>
 </dd>
 <dt class="field-even">关键字参数</dt>
@@ -462,7 +462,7 @@
 <li><p><strong>level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
 <li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
 <li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
-<li><p><strong>n</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0</span></code>。领域匹配半径格点数目。</p></li>
+<li><p><strong>window_size</strong> (<em>tuple</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
 </ul>
 </dd>
@@ -479,10 +479,10 @@
 <p><span class="math notranslate nohighlight">\(SR = \frac{tp}{tp + fp}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>空报率。当预报无降水时，<code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.NoneValue</span></code> 。当tables存在有-1 或 None值，则返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">Default.MissValue</span></code>。</p>
+<dd class="field-even"><p>空报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,10 +494,10 @@
 <p><span class="math notranslate nohighlight">\(SR = \frac{tp}{tp + fp + fn}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
-<dd class="field-even"><p>TS评分。当无降水时，<cite>Default.NoneValue</cite>。当tables存在有-1 或 None值，则返回 <cite>Default.MissValue</cite>。</p>
+<dd class="field-even"><p>TS评分。当无对应等级分类时，返回 <cite>NaN</cite>。</p>
 </dd>
 </dl>
 </dd></dl>

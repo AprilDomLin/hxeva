@@ -176,8 +176,15 @@
 </section>
 <section id="id3">
 <h2>安装说明<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
-<p>hxeva 工具包安装，通过下载并执行setup.py程序，进行安装:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+<p>hxeva 工具包安装，通过下载并执行setup.py程序，进行安装。</p>
+<p>Linux系统下，非root权限需要先创建支持安装环境的虚拟环境，并激活环境:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">your_env_name</span> <span class="n">python</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span>   <span class="c1"># create your environment</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">your_env_name</span>               <span class="c1"># activate your environment</span>
+</pre></div>
+</div>
+<p>进入含setup.py的hxeva目录中，并安装环境:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">hxeva</span>
+<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
 </section>

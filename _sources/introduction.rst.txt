@@ -29,7 +29,17 @@
 
 安装说明
 ````````````````````````````````````````````````````````````````
-hxeva 工具包安装，通过下载并执行setup.py程序，进行安装::
+hxeva 工具包安装，通过下载并执行setup.py程序，进行安装。
 
+Linux系统下，非root权限需要先创建支持安装环境的虚拟环境，并激活环境::
+
+    conda create -n your_env_name python=X.X   # create your environment
+    conda activate your_env_name               # activate your environment
+
+
+进入含setup.py的hxeva目录中，并安装环境::
+
+    cd ~/hxeva
     python setup.py install
+
 

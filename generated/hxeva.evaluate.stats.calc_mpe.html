@@ -113,7 +113,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -187,7 +186,7 @@
 <h1>calc_mpe<a class="headerlink" href="#calc-mpe" title="永久链接至标题">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="hxeva.evaluate.stats.calc_mpe">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hxeva.evaluate.stats.</span></span><span class="sig-name descname"><span class="pre">calc_mpe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#calc_mpe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.calc_mpe" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hxeva.evaluate.stats.</span></span><span class="sig-name descname"><span class="pre">calc_mpe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/stats.html#calc_mpe"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.stats.calc_mpe" title="永久链接至目标">¶</a></dt>
 <dd><p>平均偏差百分比(Mean Percentage Error, MPE)</p>
 <p><span class="math notranslate nohighlight">\(MPE = \frac{\frac{1}{N} * \sum{(truth_i - test_i)}}{\frac{1}{N} * \sum{truth_i}}\)</span></p>
 <dl class="field-list simple">
@@ -195,16 +194,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
-</ul>
-</dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>mid</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">False</span></code>。 计算时，保存格点中间值，而不完成所有格点的均值计算。</p></li>
 </ul>
 </dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>平均偏差百分比</p>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>平均偏差百分比</p>
 </dd>
 </dl>
 </dd></dl>

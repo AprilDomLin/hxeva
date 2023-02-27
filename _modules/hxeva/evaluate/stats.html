@@ -86,7 +86,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">API文档</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
 </ul>
 
@@ -153,47 +152,25 @@
   <h1>hxeva.evaluate.stats 源代码</h1><div class="highlight"><pre>
 <span></span><span class="c1"># coding: utf-8</span>
 
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;calc_cc&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_mae&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_mbe&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_mpe&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_mbr&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_mape&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_nse&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_rmse&quot;</span><span class="p">,</span> <span class="s2">&quot;Stats&quot;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseEvaluate</span>
-<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">Default</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;calc_cc&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_mae&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_mbe&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_mpe&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_mbr&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_mape&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_nse&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;calc_rmse&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Stats&quot;</span><span class="p">,</span>
-<span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_stats_check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_default</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;truth&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]):</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">arg</span><span class="p">})</span>
-        <span class="c1"># todo 完善边界的选择 --&gt; 极端天气情况的筛选</span>
-        <span class="n">amin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">amax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;exist_flag&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;truth&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;truth&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">:</span> <span class="n">exist_flag</span><span class="p">})</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">_default</span>
+<span class="k">def</span> <span class="nf">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">exist_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">exist_flag</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="mi">999</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exist_flag</span>
 
 
-<div class="viewcode-block" id="calc_cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_cc.html#hxeva.evaluate.stats.calc_cc">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_cc.html#hxeva.evaluate.stats.calc_cc">[文档]</a><span class="k">def</span> <span class="nf">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 相关系数计算(Correlation Coefficient, CC or R2)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`CC = \\frac{\\sum{(truth_i - \\overline{truth}) * (test_i - \\overline{test})}}{\\sqrt{\\sum{(truth_i - \\overline{truth})^2} * \\sum{(test_i - \\overline{test})^2}}}`</span>
@@ -202,31 +179,26 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">         相关系数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Correlation Coefficient cannot be calculated intermediately&quot;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">truth</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]</span>
         <span class="n">mTruth</span><span class="p">,</span> <span class="n">mTest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">truth</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
         <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">truth</span> <span class="o">-</span> <span class="n">mTruth</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">mTest</span><span class="p">))</span>
         <span class="n">denominator</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">truth</span> <span class="o">-</span> <span class="n">mTruth</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span>
                        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">test</span> <span class="o">-</span> <span class="n">mTest</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">cc</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">cc</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">cc</span></div>
 
 
-<div class="viewcode-block" id="calc_mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mae.html#hxeva.evaluate.stats.calc_mae">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mae.html#hxeva.evaluate.stats.calc_mae">[文档]</a><span class="k">def</span> <span class="nf">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均绝对误差(Mean Absolute Error, MAE)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`MAE = \\frac{1}{N} * \\sum{\\left|{truth_i - test_i}\\right|}`</span>
@@ -234,27 +206,25 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        平均绝对误差</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
     <span class="n">mae</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">mae</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
+        <span class="n">mae</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mae</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mae</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">mae</span></div>
 
 
-<div class="viewcode-block" id="calc_mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mape.html#hxeva.evaluate.stats.calc_mape">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mape.html#hxeva.evaluate.stats.calc_mape">[文档]</a><span class="k">def</span> <span class="nf">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均绝对误差百分比(Mean Absolute Percentage Error, MAPE)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`MAPE = \\frac{\\frac{1}{N} * \\sum{\\left|{truth_i - test_i}\\right|}}{\\overline{truth}}`</span>
@@ -262,33 +232,31 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">       平均绝对误差百分比</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
         <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">mape</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span> <span class="o">+</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span> <span class="o">*</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)</span>
-        <span class="n">mape</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span>
+        <span class="n">mape</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">exist_flag</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">)</span>
         <span class="n">mean_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">mean_truth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mape</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_truth</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mape</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+            <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mape</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">mape</span></div>
 
 
-<div class="viewcode-block" id="calc_mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbe.html#hxeva.evaluate.stats.calc_mbe">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbe.html#hxeva.evaluate.stats.calc_mbe">[文档]</a><span class="k">def</span> <span class="nf">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均误差(Mean Bias Error, MBE)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`MBE = \\frac{1}{N} * \\sum{(truth_i - test_i)}`</span>
@@ -296,27 +264,25 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        平均误差</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
     <span class="n">mbe</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">)</span> <span class="o">**</span> <span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">mbe</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
+        <span class="n">mbe</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mbe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mbe</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mbe</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mbe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">mbe</span></div>
 
 
-<div class="viewcode-block" id="calc_mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbr.html#hxeva.evaluate.stats.calc_mbr">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbr.html#hxeva.evaluate.stats.calc_mbr">[文档]</a><span class="k">def</span> <span class="nf">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;平均偏差比(Mean Bias Ratio, MBR)</span>
 
 <span class="sd">    :math:`MBR = \\frac{1}{N} * \\sum{\\frac{test_i}{truth_i}}`</span>
@@ -324,33 +290,31 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        平均偏差比</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
         <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">mbr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span> <span class="o">+</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span> <span class="o">*</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)</span>
-        <span class="n">mbr</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span>
+        <span class="n">mbr</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">exist_flag</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mbr</span> <span class="o">=</span> <span class="n">test</span>
         <span class="n">mean_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">mean_truth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mbr</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_truth</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mbr</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+            <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mbr</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">mbr</span></div>
 
 
-<span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;规范化平均偏差(Normalized Mean Error, NME)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`NME = \\frac{\\frac{1}{N} * \\sum{(test_i - truth_i)}}{\\overline{truth}}`</span>
@@ -358,32 +322,30 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        规范化平均偏差</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
         <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">nme</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">((</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span> <span class="o">+</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span> <span class="o">*</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)</span>
-        <span class="n">nme</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">nme</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">((</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span>
+        <span class="n">nme</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">exist_flag</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mean_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">)[</span><span class="n">exist_flag</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">mean_truth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">nme</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">)[</span><span class="n">exist_flag</span><span class="p">])</span> <span class="o">/</span> <span class="n">mean_truth</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">nme</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+            <span class="n">nme</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">nme</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">nme</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">nme</span>
 
 
-<span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_nmae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">calc_nmae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;规范化平均绝对偏差(Normalized Mean Absolute Error, NMAE)</span>
 
 <span class="sd">    :math:`NMAE = \\frac{\\frac{1}{N} * \\sum{\\left|{test_i - truth_i}\\right|}}{\\overline{truth}}`</span>
@@ -391,33 +353,30 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        规范化平均绝对偏差</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
         <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">nmae</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">),</span>
-                          <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span> <span class="o">+</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span> <span class="o">*</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)</span>
-        <span class="n">nmae</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">nmae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">),</span> <span class="p">(</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span>
+        <span class="n">nmae</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">exist_flag</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mean_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">truth</span> <span class="o">+</span> <span class="n">test</span><span class="p">)[</span><span class="n">exist_flag</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">mean_truth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">nmae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">)[</span><span class="n">exist_flag</span><span class="p">])</span> <span class="o">/</span> <span class="n">mean_truth</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">nmae</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+            <span class="n">nmae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">nmae</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">nmae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">nmae</span>
 
 
-<div class="viewcode-block" id="calc_mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mpe.html#hxeva.evaluate.stats.calc_mpe">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mpe.html#hxeva.evaluate.stats.calc_mpe">[文档]</a><span class="k">def</span> <span class="nf">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;平均偏差百分比(Mean Percentage Error, MPE)</span>
 
 <span class="sd">    :math:`MPE = \\frac{\\frac{1}{N} * \\sum{(truth_i - test_i)}}{\\frac{1}{N} * \\sum{truth_i}}`</span>
@@ -425,33 +384,31 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        平均偏差百分比</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
         <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">truth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">mpe</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span> <span class="o">+</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span> <span class="o">*</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)</span>
-        <span class="n">mpe</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">test</span> <span class="o">-</span> <span class="n">truth</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">tmp_flag</span><span class="p">)</span> <span class="o">*</span> <span class="n">tmp_flag</span>
+        <span class="n">mpe</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">exist_flag</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">tmp_flag</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">mpe</span> <span class="o">=</span> <span class="n">test</span> <span class="o">-</span> <span class="n">truth</span>
         <span class="n">mean_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">mean_truth</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mpe</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_truth</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mpe</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span>
+            <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mpe</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">mpe</span></div>
 
 
-<div class="viewcode-block" id="calc_nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_nse.html#hxeva.evaluate.stats.calc_nse">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_nse.html#hxeva.evaluate.stats.calc_nse">[文档]</a><span class="k">def</span> <span class="nf">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;纳什效率系数(Nash–Sutcliffe efficiency score, NSE)</span>
 
 <span class="sd">    :math:`NSE = 1 - \\frac{\\sum(truth_i - test_i)^2}{\\sum{(truth_i - \\overline{truth})^2}}`</span>
@@ -459,32 +416,31 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
-<span class="sd">        limit(int or float): 默认为 ``-999``。 NSE值最小值限制，防止数值过低导致溢出。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        limit: 默认为 ``-999``。 NSE值最小值限制，防止数值过低导致溢出。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        纳什效率系数</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;intermediate&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-            <span class="s2">&quot;Correlation Coefficient cannot be calculated intermediately&quot;</span><span class="p">)</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Correlation Coefficient cannot be calculated intermediately&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">truth</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">]</span>
         <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">truth</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">nse</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">Default</span><span class="o">.</span><span class="n">NoneValue</span><span class="p">)</span>
-        <span class="n">nse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">nse</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">denominator</span><span class="p">:</span>
+            <span class="n">nse</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span>
+            <span class="n">nse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">nse</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">nse</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">nse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">nse</span></div>
 
 
-<div class="viewcode-block" id="calc_rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_rmse.html#hxeva.evaluate.stats.calc_rmse">[文档]</a><span class="nd">@_stats_check</span>
-<span class="k">def</span> <span class="nf">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="calc_rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_rmse.html#hxeva.evaluate.stats.calc_rmse">[文档]</a><span class="k">def</span> <span class="nf">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;均方根误差计算(Root-Mean-Square Error, RMSE)</span>
 
 <span class="sd">    :math:`RMSE = \\sqrt{\\frac{1}{N} * \\sum{(truth_i - test_i) ^ 2}}`</span>
@@ -492,22 +448,20 @@
 <span class="sd">    Args:</span>
 <span class="sd">        truth : 真实值数组</span>
 <span class="sd">        test : 待测试值数组</span>
-
-<span class="sd">    Keyword Args:</span>
-<span class="sd">        exist_flag(:obj:`ndarray`): 默认为 ``全存在``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">        mid(bool): 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">        exist_flag: 默认为 ``None``。 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">        mid: 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        均方根误差</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
+    <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">_stats_check</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
     <span class="n">rmse</span> <span class="o">=</span> <span class="p">(</span><span class="n">truth</span> <span class="o">-</span> <span class="n">test</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">rmse</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+    <span class="k">if</span> <span class="n">mid</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="p">[</span><span class="o">~</span><span class="n">exist_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exist_flag</span><span class="p">):</span>
         <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rmse</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">rmse</span> <span class="o">=</span> <span class="n">Default</span><span class="o">.</span><span class="n">MissValue</span>
+        <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">rmse</span></div>
 
 
@@ -529,10 +483,9 @@
 <span class="sd">            test : 待测试值数组</span>
 
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            exist_flag(:obj:`ndarray`) : 默认为 ``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            exist_flag(:obj:`ndarray`) : 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
 <span class="sd">            amin(int or float) : 默认为 ``0``。数据最小边界值。</span>
 <span class="sd">            amax(int or float) : 默认为 ``999``。数据最大边界值。</span>
-<span class="sd">            mid(bool) : 默认为 ``False``。计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">            names(list[str]) : 默认为 ``[&quot;RMSE&quot;, &quot;MAE&quot;, &quot;MBE&quot;, &quot;MAPE&quot;, &quot;CC&quot;]``。需要计算的统计误差指标。</span>
 <span class="sd">            acc(int): 默认为 ``4``。计算结果的精度值，即保留有效小数点位数</span>
 <span class="sd">            save_path(str) : 默认为 ``./stats.csv``。评分结果csv文件的保存路径。</span>
@@ -540,20 +493,27 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            统计误差结果</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># 多指标统计计算</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">stats_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;MBE&quot;</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">])</span>
+        <span class="n">amin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;amin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">amax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">),</span>
+                                         <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;MBE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">])</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="s2">&quot;./stats.csv&quot;</span><span class="p">)</span>
         
-        <span class="n">save_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="s2">&quot;./stats.csv&quot;</span><span class="p">)</span>
+        <span class="c1"># 多指标统计计算</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">amin</span><span class="o">=</span><span class="n">amin</span><span class="p">,</span> <span class="n">amax</span><span class="o">=</span><span class="n">amax</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">acc</span><span class="o">=</span><span class="n">acc</span><span class="p">)</span>
+        
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">stats_names</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;Statistics Calculated Done! Result has been saved in &quot;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.cc">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 相关系数计算(Correlation Coefficient, CC or R2)</span>
 
 <span class="sd">        :math:`CC = \\frac{\\sum{(truth_i - \\overline{truth}) * (test_i - \\overline{test})}}{\\sqrt{\\sum{(truth_i - \\overline{truth})^2} * \\sum{(test_i - \\overline{test})^2}}}`</span>
@@ -563,15 +523,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">             相关系数</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mae">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均绝对误差(Mean Absolute Error, MAE)</span>
 
 <span class="sd">        :math:`MAE = \\frac{1}{N} * \\sum{\\left|{truth_i - test_i}\\right|}`</span>
@@ -579,17 +538,15 @@
 <span class="sd">        Args:</span>
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
-<span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
+<span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            平均绝对误差</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mape">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均绝对误差百分比(Mean Absolute Percentage Error, MAPE)</span>
 
 <span class="sd">        :math:`MAPE = \\frac{\\frac{1}{N} * \\sum{\\left|{truth_i - test_i}\\right|}}{\\overline{truth}}`</span>
@@ -598,15 +555,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">           平均绝对误差百分比</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mbe">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mbe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mbe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均误差(Mean Bias Error, MBE)</span>
 
 <span class="sd">        :math:`MBE = \\frac{1}{N} * \\sum{(truth_i - test_i)}`</span>
@@ -615,15 +571,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            平均误差</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mbr">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mbr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mbr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;平均偏差比(Mean Bias Ratio, MBR)</span>
 
 <span class="sd">        :math:`MBR = \\frac{1}{N} * \\sum{\\frac{test_i}{truth_i}}`</span>
@@ -632,15 +587,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            平均偏差比</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.nme"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nme">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">nme</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">nme</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;规范化平均偏差(Normalized Mean Error, NME)</span>
 
 <span class="sd">        :math:`NME = \\frac{\\frac{1}{N} * \\sum{(test_i - truth_i)}}{\\overline{truth}}`</span>
@@ -649,16 +603,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            规范化平均偏差</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.nmae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nmae">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">nmae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">nmae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;规范化平均绝对偏差(Normalized Mean Absolute Error, NMAE)</span>
 
 <span class="sd">        :math:`NMAE = \\frac{\\frac{1}{N} * \\sum{\\left|{test_i - truth_i}\\right|}}{\\overline{truth}}`</span>
@@ -667,15 +619,14 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            规范化平均绝对偏差</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_nmae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_nmae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mpe">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">mpe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mpe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;平均偏差百分比(Mean Percentage Error, MPE)</span>
 
 <span class="sd">        :math:`MPE = \\frac{\\frac{1}{N} * \\sum{(truth_i - test_i)}}{\\frac{1}{N} * \\sum{truth_i}}`</span>
@@ -684,16 +635,15 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            平均偏差百分比</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nse">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">nse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-            <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;纳什效率系数(Nash–Sutcliffe efficiency score, NSE)</span>
 
 <span class="sd">        :math:`NSE = 1 - \\frac{\\sum(truth_i - test_i)^2}{\\sum{(truth_i - \\overline{truth})^2}}`</span>
@@ -702,22 +652,15 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">            limit : 默认为 ``-999``。 NSE值最小值限制，防止数值过低导致溢出。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            纳什效率系数</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_nse</span><span class="p">(</span>
-            <span class="n">truth</span><span class="p">,</span>
-            <span class="n">test</span><span class="p">,</span>
-            <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span>
-            <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.rmse">[文档]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-             <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">or</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;均方根误差计算(Root-Mean-Square Error, RMSE)</span>
 
 <span class="sd">        :math:`RMSE = \\sqrt{\\frac{1}{N} * \\sum{(truth_i - test_i) ^ 2}}`</span>
@@ -726,12 +669,11 @@
 <span class="sd">            truth : 真实值数组</span>
 <span class="sd">            test : 待测试值数组</span>
 <span class="sd">            exist_flag : 数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
-<span class="sd">            mid : 默认为 ``False``。 计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            均方根误差</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="n">mid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Stats.stats"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.stats">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -742,10 +684,9 @@
 <span class="sd">            test : 待测试值数组</span>
 
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            exist_flag(:obj:`ndarray`) : 默认为 ``全存在``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            exist_flag(:obj:`ndarray`) : 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
 <span class="sd">            amin(int or float) : 默认为 ``0``。数据最小边界值。</span>
 <span class="sd">            amax(int or float) : 默认为 ``999``。数据最大边界值。</span>
-<span class="sd">            mid(bool) : 默认为 ``False``。计算时，保存格点中间值，而不完成所有格点的均值计算。</span>
 <span class="sd">            names(list[str]) : 默认为 ``[&quot;RMSE&quot;, &quot;MAE&quot;, &quot;MBE&quot;, &quot;MAPE&quot;, &quot;CC&quot;]``。需要计算的统计误差指标。</span>
 <span class="sd">            acc(int): 默认为 ``4``。计算结果的精度值，即保留有效小数点位数</span>
 
@@ -754,20 +695,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="c1"># 根据阈值分类原始数据</span>
-        <span class="n">amin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">amax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
-        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
+        <span class="n">amin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;amin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">amax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span>
                                 <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">truth</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">amin</span> <span class="o">&lt;=</span> <span class="n">test</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">test</span> <span class="o">&lt;</span> <span class="n">amax</span><span class="p">),</span>
                                          <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-
+        
         <span class="c1"># 多指标、多等级评分参数</span>
-        <span class="n">mid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">stats_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;MBE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">])</span>
-        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAE&quot;</span><span class="p">,</span> <span class="s2">&quot;MBE&quot;</span><span class="p">,</span> <span class="s2">&quot;MAPE&quot;</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">])</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         
         <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">stats_names</span><span class="p">:</span>
-            <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="p">),</span> <span class="n">acc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="n">acc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div></div>
 </pre></div>
 

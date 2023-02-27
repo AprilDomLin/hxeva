@@ -108,7 +108,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -194,7 +193,7 @@
 <dt>Args:</dt><dd><p>truth : 真值数据或真值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)
 test :  测试值数据或测试值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)</p>
 </dd>
-<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
+<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
 threshold(list): 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。
 min_points(list): 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p>
 </dd>
@@ -223,11 +222,31 @@ min_points(list): 默认为 <code class="docutils literal notranslate"><span cla
 <dd class="field-even"><ul class="simple">
 <li><p><strong>window_size</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">3]</span></code>。卷积窗口宽度的列表，以格点数为单位</p></li>
 <li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1]</span></code>。事件发生的阈值</p></li>
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 </ul>
 </dd>
 <dt class="field-odd">返回</dt>
 <dd class="field-odd"><p>shape与threshold相同，根据不同阈值划分的FSS苹果结果</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.space.Space.Grid">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/space.html#Space.Grid"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.space.Space.Grid" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – </p></li>
+<li><p><strong>test</strong> (<em>numpy.ndarray</em>) – </p></li>
+<li><p><strong>names</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Keyword Args:</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>格点检验结果</p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,7 +260,7 @@ min_points(list): 默认为 <code class="docutils literal notranslate"><span cla
 <dt>Args:</dt><dd><p>truth : 真值数据或真值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)
 test :  测试值数据或测试值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)</p>
 </dd>
-<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
+<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
 threshold(list): 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。
 min_points(list): 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p>
 </dd>
@@ -264,7 +283,7 @@ min_points(list): 默认为 <code class="docutils literal notranslate"><span cla
 <dt>Args:</dt><dd><p>truth : 真值数据或真值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)
 test :  测试值数据或测试值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)</p>
 </dd>
-<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
+<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
 threshold(list): 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。
 min_points(list): 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p>
 </dd>
@@ -291,7 +310,7 @@ min_points(list): 默认为 <code class="docutils literal notranslate"><span cla
 </dd>
 <dt class="field-even">关键字参数</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。</p></li>
 <li><p><strong>min_points</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
@@ -317,8 +336,8 @@ test : 待测试值数组</p>
 <dl class="field-list simple">
 <dt class="field-odd">关键字参数</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1,</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。</p></li>
 <li><p><strong>min_points</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
 <li><p><strong>save_path</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">./space.csv</span></code>.评分结果csv文件的保存路径。</p></li>
@@ -337,8 +356,8 @@ test : 待测试值数组</p>
 </dd>
 <dt class="field-even">关键字参数</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
-<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。</p></li>
+<li><p><strong>exist_flag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1,</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。</p></li>
 <li><p><strong>min_points</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p></li>
 </ul>
 </dd>

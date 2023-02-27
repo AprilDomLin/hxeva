@@ -71,39 +71,27 @@
 短临雷达产品
 ================================
 
-.. currentmodule:: hxeva.product.radacreffcst
+.. currentmodule:: hxeva.product.radaobs
 
-雷达回波预报产品
+雷达短时监测检验产品
 --------------------------------
 .. autosummary::
     :toctree: generated
     :nosignatures:
     :template: classtemplate.rst
 
-    RadaCrefFcstGrid
+    RadaObsGrid
+    RadaObsStation
 
 
-.. currentmodule:: hxeva.product.radaprehorobs
+.. currentmodule:: hxeva.product.radafcst
 
-雷达定量降水反演产品(QPE)
+雷达短时预报检验产品
 --------------------------------
 .. autosummary::
     :toctree: generated
     :nosignatures:
     :template: classtemplate.rst
 
-    RadaPreHorGrid
-    RadaPreHorSta
-
-
-.. currentmodule:: hxeva.product.radaprehorfcst
-
-雷达降水预报产品(QPF)
---------------------------------
-.. autosummary::
-    :toctree: generated
-    :nosignatures:
-    :template: classtemplate.rst
-
-    RadaPreHorFcstGrid
-    RadaPreHorFcstSta
+    RadaFcstGrid
+    RadaFcstStation

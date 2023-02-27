@@ -1,12 +1,12 @@
 ﻿.. role:: hidden
     :class: hidden-section
-.. currentmodule:: hxeva.product.radacreffcst
+.. currentmodule:: hxeva.product.radaobs
 
 
-RadaCrefFcstGrid
-================
+RadaObsGrid
+===========
 
-.. autoclass:: RadaCrefFcstGrid
+.. autoclass:: RadaObsGrid
     :members:
 
 

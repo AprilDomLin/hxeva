@@ -107,7 +107,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -183,7 +182,7 @@
 <dt class="sig sig-object py" id="hxeva.product.base.DataReader">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hxeva.product.base.</span></span><span class="sig-name descname"><span class="pre">DataReader</span></span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader" title="永久链接至目标">¶</a></dt>
 <dd><p>格点数据读取器</p>
-<p>面向对象，读取目标数据(<code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span></code>)、目标范围(<code class="xref py py-obj docutils literal notranslate"><span class="pre">General</span></code> 或 <code class="xref py py-obj docutils literal notranslate"><span class="pre">extent</span></code>)和目标变量(<code class="xref py py-obj docutils literal notranslate"><span class="pre">vnames</span></code>)的格点数据值。</p>
+<p>面向对象，读取目标数据(<code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span></code>)、目标范围(<code class="xref py py-obj docutils literal notranslate"><span class="pre">extent</span></code>)和目标变量(<code class="xref py py-obj docutils literal notranslate"><span class="pre">vnames</span></code>)的格点数据值。</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hxeva.product.base.DataReader.GRIBDICT">
 <span class="sig-name descname"><span class="pre">GRIBDICT</span></span><a class="headerlink" href="#hxeva.product.base.DataReader.GRIBDICT" title="永久链接至目标">¶</a></dt>
@@ -229,25 +228,26 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.product.base.DataReader.load">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gribdict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Plev'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load" title="永久链接至目标">¶</a></dt>
 <dd><p>加载格点数据</p>
-<p>根据数据路径(path)，所需读取变量列表(vnames)，及其他参数——包括，经纬度精度(acc)、落区范围(extend)、 grib2变量名称(gribdict)读取目标数据</p>
+<p>根据数据路径(path)，所需读取变量列表(vnames)，及其他参数——包括，经纬度精度(acc)、落区范围(extend)、
+grib2变量名称(gribdict)读取目标数据</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>str</em>) – 原始数据/产品路径。</p></li>
 <li><p><strong>vnames</strong> (<em>list</em>) – 待读取的变量名称列表。</p></li>
-</ul>
-</dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><ul class="simple">
+<li><p><strong>extend</strong> (<em>dict</em>) – 产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">2</span></code>。读取经纬度的保留小数精度。</p></li>
-<li><p><strong>extend</strong> (<em>dict</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">General</span></code> 参数。产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成。</p></li>
-<li><p><strong>gribdict</strong> (<em>dict</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。需补充的GIRB2数据变量选取参数，用于select方法。</p></li>
+<li><p><strong>gribdict</strong> (<em>Optional</em><em>[</em><em>dict</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。需补充的GIRB2数据变量选取参数，用于select方法。</p></li>
+<li><p><strong>name_lon</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lon</span></code>。经度坐标NC文件变量名称</p></li>
+<li><p><strong>name_lat</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lat</span></code>。纬度坐标NC文件变量名称</p></li>
+<li><p><strong>surface</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">True</span></code>。是否为地面格点数据</p></li>
+<li><p><strong>name_height</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Plev</span></code>。高度轴名称。仅当 <code class="xref py py-obj docutils literal notranslate"><span class="pre">surface</span></code> 为 <code class="docutils literal notranslate"><span class="pre">True</span></code> 时可用。</p></li>
 </ul>
 </dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>含格点数据的容器</p>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>含格点数据的容器</p>
 </dd>
 </dl>
 <p class="rubric">实际案例</p>
@@ -261,7 +261,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.product.base.DataReader.load_grb">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load_grb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_Lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_Lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lat'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load_grb"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load_grb" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load_grb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load_grb"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load_grb" title="永久链接至目标">¶</a></dt>
 <dd><p>GRIB格式数据的读取。</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
@@ -269,22 +269,20 @@
 <li><p><strong>path</strong> (<em>str</em>) – 原始数据/产品路径。</p></li>
 <li><p><strong>vnames</strong> (<em>list</em>) – 待读取的变量名称列表。</p></li>
 <li><p><strong>extend</strong> (<a class="reference internal" href="hxeva.product.base.Extend.html#hxeva.product.base.Extend" title="hxeva.product.base.Extend"><em>hxeva.product.base.Extend</em></a>) – 产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成</p></li>
-<li><p><strong>name_Lon</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lon</span></code>。经度坐标NC文件变量名称</p></li>
-<li><p><strong>name_Lat</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lat</span></code>。纬度坐标NC文件变量名称</p></li>
+<li><p><strong>name_lat</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lat</span></code>。纬度坐标NC文件变量名称</p></li>
+<li><p><strong>name_lon</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lon</span></code>。经度坐标NC文件变量名称</p></li>
+<li><p><strong>surface</strong> (<em>bool</em>) – 是否为地面格点数据</p></li>
 </ul>
 </dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><p><strong>surface</strong> (<em>bool</em>) – 是否为地面格点数据</p>
-</dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>含GRIB格点数据的容器</p>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>含GRIB格点数据的容器</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.product.base.DataReader.load_nc">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load_nc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_Lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_Lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lat'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load_nc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load_nc" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load_nc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Lat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Plev'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.load_nc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.load_nc" title="永久链接至目标">¶</a></dt>
 <dd><p>NC格式数据的读取。</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
@@ -292,18 +290,14 @@
 <li><p><strong>path</strong> (<em>str</em>) – 原始数据/产品路径。</p></li>
 <li><p><strong>vnames</strong> (<em>list</em>) – 待读取的变量名称列表。</p></li>
 <li><p><strong>extend</strong> (<a class="reference internal" href="hxeva.product.base.Extend.html#hxeva.product.base.Extend" title="hxeva.product.base.Extend"><em>hxeva.product.base.Extend</em></a>) – 产品读取经纬度范围，字典由开始经度(slon)、结束经度(elon)、开始纬度(slat)、结束纬度(elat)和经纬度精度(error)组成</p></li>
-<li><p><strong>name_Lon</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lon</span></code>。经度坐标NC文件变量名称</p></li>
-<li><p><strong>name_Lat</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lat</span></code>。纬度坐标NC文件变量名称</p></li>
+<li><p><strong>name_lon</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lon</span></code>。经度坐标NC文件变量名称</p></li>
+<li><p><strong>name_lat</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Lat</span></code>。纬度坐标NC文件变量名称</p></li>
+<li><p><strong>surface</strong> (<em>bool</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">True</span></code>。是否为地面格点数据</p></li>
+<li><p><strong>name_height</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Plev</span></code>。高度轴名称。仅当 <code class="xref py py-obj docutils literal notranslate"><span class="pre">surface</span></code> 为 <code class="docutils literal notranslate"><span class="pre">True</span></code> 时可用。</p></li>
 </ul>
 </dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>surface</strong> (<em>bool</em>) – 是否为地面格点数据</p></li>
-<li><p><strong>name_Height</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">Plev</span></code>。高度轴名称。仅当 <code class="xref py py-obj docutils literal notranslate"><span class="pre">surface</span></code> 为 <code class="docutils literal notranslate"><span class="pre">True</span></code> 时可用。</p></li>
-</ul>
-</dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>含NC格点数据的容器</p>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>含NC格点数据的容器</p>
 </dd>
 </dl>
 </dd></dl>
@@ -322,30 +316,6 @@
 </dd>
 <dt class="field-even">返回</dt>
 <dd class="field-even"><p>文件名称</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hxeva.product.base.DataReader.read">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#DataReader.read"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.DataReader.read" title="永久链接至目标">¶</a></dt>
-<dd><p>基于时间、变量名和文件规则读取相应的数据。</p>
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>time</strong> (<em>datetime.datetime</em>) – 目标时间</p></li>
-<li><p><strong>vnames</strong> (<em>list</em>) – 变量名列表</p></li>
-<li><p><strong>file</strong> (<em>str</em>) – 数据路径规则</p></li>
-</ul>
-</dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>lead_time</strong> (<em>timedelta</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。预报时长</p></li>
-<li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">2</span></code>。经纬度坐标的读取精度。</p></li>
-</ul>
-</dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>含格点数据的容器</p>
 </dd>
 </dl>
 </dd></dl>

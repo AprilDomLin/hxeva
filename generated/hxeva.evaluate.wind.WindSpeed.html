@@ -107,7 +107,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../hxeva.html#id1">索引与列表</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
 </ul>
 
@@ -348,7 +347,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实转变后的风速数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试转变后的风速数组</p></li>
-<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -368,7 +367,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实转变后的风速数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试转变后的风速数组</p></li>
-<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>
@@ -385,7 +384,7 @@
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 需根据阈值划分级别的风速。</p></li>
-<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>threshold</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">蒲氏风速表</span></code>。分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</p></li>
 </ul>
 </dd>
@@ -406,7 +405,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实转变后的风速数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试转变后的风速数组</p></li>
-<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">全存在</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</p></li>
 </ul>
 </dd>
 <dt class="field-even">返回</dt>

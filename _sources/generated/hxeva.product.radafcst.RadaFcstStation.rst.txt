@@ -1,12 +1,12 @@
 ﻿.. role:: hidden
     :class: hidden-section
-.. currentmodule:: hxeva.product.radaprehorobs
+.. currentmodule:: hxeva.product.radafcst
 
 
-RadaPreHorGrid
-==============
+RadaFcstStation
+===============
 
-.. autoclass:: RadaPreHorGrid
+.. autoclass:: RadaFcstStation
     :members:
 
 
