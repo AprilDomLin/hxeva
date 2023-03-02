@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Score &mdash; hxeva 0.2.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="calc_acc" href="hxeva.evaluate.scores.calc_acc.html" />
+    <link rel="prev" title="BaseEvaluate" href="hxeva.evaluate.base.BaseEvaluate.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">目录:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">使用示例</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../hxeva.html">API文档</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html">检验评估指标基础模块</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../evaluate.html#id2">评分检验</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Score</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_acc.html">calc_acc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_bias.html">calc_bias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_ets.html">calc_ets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_far.html">calc_far</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_hss.html">calc_hss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_po.html">calc_po</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_pod.html">calc_pod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_ra.html">calc_ra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_rd.html">calc_rd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_sr.html">calc_sr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.calc_ts.html">calc_ts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html">ContingencyTable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">空间检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">统计误差检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">风场检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../product.html">业务基础模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../product.html#id7">短临雷达产品</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../hxeva.html">API文档</a> &raquo;</li>
+        
+          <li><a href="../evaluate.html">检验评估指标基础模块</a> &raquo;</li>
+        
+      <li>Score</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/generated/hxeva.evaluate.scores.Score.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="score">
+<h1>Score<a class="headerlink" href="#score" title="永久链接至标题">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hxeva.evaluate.scores.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score" title="永久链接至目标">¶</a></dt>
+<dd><p>评分指标计算类。</p>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p>可以直接通过调用 <cite>calc</cite> 和 <cite>scores</cite> 方法计算多等级、多类型的评分结果。</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.acc">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.acc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.acc" title="永久链接至目标">¶</a></dt>
+<dd><p>准确率 / 晴雨评分</p>
+<p><span class="math notranslate nohighlight">\(Accuracy = \frac{tp + tn}{tp + fp + fn + tn}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>准确率 / 晴雨评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.bias">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.bias"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.bias" title="永久链接至目标">¶</a></dt>
+<dd><p>偏差值</p>
+<p><span class="math notranslate nohighlight">\(Bias = \left|\frac{tp + tn}{tp + fn} - 1\right|\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>偏差值。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.calc">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.calc"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.calc" title="永久链接至目标">¶</a></dt>
+<dd><p>算法人员调用进行相关评分计算</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
+<li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
+</ul>
+</dd>
+<dt class="field-even">关键字参数</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">2.5,</span> <span class="pre">8.0,</span> <span class="pre">16.0,</span> <span class="pre">150]</span></code>。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</p></li>
+<li><p><strong>level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
+<li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
+<li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
+<li><p><strong>window_size</strong> (<em>tuple</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
+<li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">./scores.csv</span></code>。评分结果csv文件的保存路径。</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.classify">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">classify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.classify"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.classify" title="永久链接至目标">¶</a></dt>
+<dd><p>基于联列表讲数据分为 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code>、<code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code>、<code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p>TP-命中   FP-误报/空报   FN-漏报   D-否定正确</p>
+<dl>
+<dt>二分类 binary method</dt><dd><table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>观测   预测</p></th>
+<th class="head"><p>FCT &gt;= threshold</p></th>
+<th class="head"><p>FCT &lt;  threshold</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>OBS &gt;= threshold</p></td>
+<td><p>TP</p></td>
+<td><p>FN</p></td>
+</tr>
+<tr class="row-odd"><td><p>OBS &lt;  threshold</p></td>
+<td><p>FP</p></td>
+<td><p>TN</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>多分类 multi method</dt><dd><table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>观测   预测</p></th>
+<th class="head"><p>FCT == threshold</p></th>
+<th class="head"><p>FCT =! threshold</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>OBS == threshold</p></td>
+<td><p>TP</p></td>
+<td><p>FN</p></td>
+</tr>
+<tr class="row-odd"><td><p>OBS =! threshold</p></td>
+<td><p>FP</p></td>
+<td><p>TN</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>多级别 grade method</dt><dd><table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 34%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>观测   预测</p></th>
+<th class="head"><p>FCT == threshold</p></th>
+<th class="head"><p>FCT &lt;  threshold</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>OBS == threshold</p></td>
+<td><p>TP</p></td>
+<td><p>FN</p></td>
+</tr>
+<tr class="row-odd"><td><p>OBS &lt;  threshold</p></td>
+<td><p>FP</p></td>
+<td><p>TN</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组 或 转变数组</p></li>
+<li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组 或 转变数组</p></li>
+<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – 分类等级</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code> 。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
+<li><p><strong>window_size</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 领域匹配窗口直径格点数，若为None，则不进行领域匹配。 【注：当前仅支持 binary 二分类方法时使用】</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>联列表分类结果。TP, FP, FN, TN</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.ets">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">ets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.ets"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.ets" title="永久链接至目标">¶</a></dt>
+<dd><p>ETS技巧评分</p>
+<p><span class="math notranslate nohighlight">\(ETS = \frac{tp -ra}{tp + fp + fn + tn - ra}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>ETS技巧评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.expand">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(11,</span> <span class="pre">11)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.expand"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.expand" title="永久链接至目标">¶</a></dt>
+<dd><p>模糊空间领域匹配。</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy.ndarray</em>) – 待模糊空间领域匹配的数组</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
+<li><p><strong>window_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">11</span></code>。领域匹配的窗口直径格点数目，非距离长度或经纬度度数。</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">max</span></code>。领域匹配的方法， 仅支持 <code class="docutils literal notranslate"><span class="pre">max</span></code> 和 <code class="docutils literal notranslate"><span class="pre">mean</span></code> 两种。</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>模糊空间领域匹配的结果。其 shape 与 <cite>data</cite> 相同。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.far">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">far</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.far"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.far" title="永久链接至目标">¶</a></dt>
+<dd><p>空报率 / 误报率</p>
+<p><span class="math notranslate nohighlight">\(FAR = \frac{fp}{tp + fp}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>空报率 / 误报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.hss">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">hss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.hss"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.hss" title="永久链接至目标">¶</a></dt>
+<dd><p>HSS技巧评分</p>
+<p><span class="math notranslate nohighlight">\(expect = \frac{(tp + fn) * (tp + fp) + (tn + fn) * (tn + fp)}{tp + fp + fn + tn}\)</span></p>
+<p><span class="math notranslate nohighlight">\(HSS = \frac{tp + tn - expect}{tp + fp + fn + tn - expect}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>HSS技巧评分。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.po">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">po</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.po"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.po" title="永久链接至目标">¶</a></dt>
+<dd><p>漏报率</p>
+<p><span class="math notranslate nohighlight">\(PO = \frac{fn}{tp + fn}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>漏报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.pod">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">pod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.pod"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.pod" title="永久链接至目标">¶</a></dt>
+<dd><p>命中率</p>
+<p><span class="math notranslate nohighlight">\(PO = \frac{tp}{tp + fn}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>命中率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.scores">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.scores"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.scores" title="永久链接至目标">¶</a></dt>
+<dd><p>更灵活的评分调用方式，类似calc。但没有封装结果保存与打印。</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
+<li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
+</ul>
+</dd>
+<dt class="field-even">关键字参数</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">2.5,</span> <span class="pre">8.0,</span> <span class="pre">16.0,</span> <span class="pre">150]</span></code>。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</p></li>
+<li><p><strong>level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
+<li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
+<li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
+<li><p><strong>window_size</strong> (<em>tuple</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
+<li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
+</ul>
+</dd>
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>各等级的不同评分结果。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.sr">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">sr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.sr"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.sr" title="永久链接至目标">¶</a></dt>
+<dd><p>成功率</p>
+<p><span class="math notranslate nohighlight">\(SR = \frac{tp}{tp + fp}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>空报率。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hxeva.evaluate.scores.Score.ts">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">ts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/scores.html#Score.ts"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.scores.Score.ts" title="永久链接至目标">¶</a></dt>
+<dd><p>TS评分</p>
+<p><span class="math notranslate nohighlight">\(SR = \frac{tp}{tp + fp + fn}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.scores.ContingencyTable.html#hxeva.evaluate.scores.ContingencyTable" title="hxeva.evaluate.scores.ContingencyTable"><em>hxeva.evaluate.scores.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>TS评分。当无对应等级分类时，返回 <cite>NaN</cite>。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hxeva.evaluate.scores.calc_acc.html" class="btn btn-neutral float-right" title="calc_acc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hxeva.evaluate.base.BaseEvaluate.html" class="btn btn-neutral float-left" title="BaseEvaluate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

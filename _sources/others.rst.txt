@@ -1,0 +1,44 @@
+.. hxeva documentation file, created by fang linwanghao
+   sphinx-quickstart on Thu Dec  1 12:44:57 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+其他
+=================================
+
+参考文献
+---------------------------
+
+`[1] Wernli, H., Paulat, M., Hagen, M., & Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.`__
+
+.. __: https://github.com/AprilDomLin/hxeva/blob/main/_scr/ref/SAL.pdf
+
+
+更新说明
+---------------------------
++------------+------------+--------------+-----------+
+| 更新时间   | 版本号     | 更新内容     | 负责人    |
++============+============+==============+===========+
+| 2023.01.30 | v 0.2.0    | docs文档修改 | 方璘王昊  |
++------------+------------+--------------+-----------+
+| 2023.02.27 | v 0.3.0    | 详见 v0.3.0  | 方璘王昊  |
++------------+------------+--------------+-----------+
+
+v 0.3.0
+>>>>>>>>>>>>>>
+1. 修改evaluate模块针对缺失值的标定，以np.nan替换原具体数值表示缺省。
+
+2. 添加领域匹配(基于最大池化方法)检验方法。
+
+3. product模块产品业务修改，删除行政区域划分评估，并完善Usage相关内容。
+
+4. 完善docstring内容。
+
+
+
+开发团队
+---------------------------
+- 方璘王昊
+- 叶先才
+- 苏睿恒

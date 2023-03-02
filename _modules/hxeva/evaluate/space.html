@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hxeva.evaluate.space &mdash; hxeva 0.2.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> hxeva
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">目录:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">使用示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hxeva.html">API文档</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../others.html">其他</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hxeva</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>hxeva.evaluate.space</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>hxeva.evaluate.space 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Property&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_S&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_A&quot;</span><span class="p">,</span> <span class="s2">&quot;calc_L&quot;</span><span class="p">,</span> <span class="s2">&quot;Space&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">label</span><span class="p">,</span> <span class="n">regionprops</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseEvaluate</span>
+<span class="kn">from</span> <span class="nn">.scores</span> <span class="kn">import</span> <span class="n">Score</span>
+<span class="kn">from</span> <span class="nn">.stats</span> <span class="kn">import</span> <span class="n">Stats</span>
+<span class="kn">from</span> <span class="nn">.wind</span> <span class="kn">import</span> <span class="n">Wind</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">calc_dis</span>
+
+<span class="n">Property</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Property&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;all_prop&quot;</span><span class="p">,</span> <span class="s2">&quot;props&quot;</span><span class="p">],</span> <span class="n">defaults</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<span class="sd">&quot;&quot;&quot;二维矩阵数据，不同落区的属性值。&quot;&quot;&quot;</span>
+<span class="n">Property</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;np.ndarray: 默认为 ``None``。 原始数值。&quot;</span>
+<span class="n">Property</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;np.ndarray: 默认为 ``None``。 基于`skimage.measure.label` 方法划分的连接落区。&quot;</span>
+<span class="n">Property</span><span class="o">.</span><span class="n">all_prop</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;:obj:`skimage.measure._regionprops.RegionProperties`: 默认为 ``None``。&quot;</span>
+                             <span class="s2">&quot;基于`skimage.measure.regionprops` 方法计算的整体落区属性。&quot;</span><span class="p">)</span>
+<span class="n">Property</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;list : 默认为 ``None``。基于`skimage.measure.regionprops` 方法计算的每个落区属性。&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_space_check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;truth&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">999</span><span class="p">])</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;min_points&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="n">Space</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">Space</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">_default</span>
+
+
+<div class="viewcode-block" id="calc_S"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_S.html#hxeva.evaluate.space.calc_S">[文档]</a><span class="k">def</span> <span class="nf">calc_S</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;结构分值计算</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        truth : 真值数据区域划分数据</span>
+<span class="sd">        test :  测试值数据区域划分数据</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        结构得分(S)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">Property</span><span class="p">),</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected </span><span class="se">\&quot;</span><span class="s2">Property</span><span class="se">\&quot;</span><span class="s2">, but got the type of truth: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">Property</span><span class="p">),</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected </span><span class="se">\&quot;</span><span class="s2">Property</span><span class="se">\&quot;</span><span class="s2">, but got the type of test: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">scaled_volume</span><span class="p">(</span><span class="n">tmp</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate Scaled Volume</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tmp</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+            <span class="n">rn</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span>
+            <span class="n">v</span> <span class="o">+=</span> <span class="n">rn</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;max_intensity&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">])</span>
+    
+    <span class="n">v_truth</span> <span class="o">=</span> <span class="n">scaled_volume</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span>
+    <span class="n">v_test</span> <span class="o">=</span> <span class="n">scaled_volume</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">-</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">+</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="calc_A"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_A.html#hxeva.evaluate.space.calc_A">[文档]</a><span class="k">def</span> <span class="nf">calc_A</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;振幅分值计算</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        truth : 真值数据区域划分数据</span>
+<span class="sd">        test :  测试值数据区域划分数据</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        振幅得分(A)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d_truth</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span>
+    <span class="n">d_test</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">d_test</span> <span class="o">-</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">d_test</span> <span class="o">+</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calc_L"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_L.html#hxeva.evaluate.space.calc_L">[文档]</a><span class="k">def</span> <span class="nf">calc_L</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; 落区分值计算</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        truth : 真值数据区域划分数据</span>
+<span class="sd">        test :  测试值数据区域划分数据</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        落区得分(L)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># L1</span>
+    <span class="c1"># 计算区域内非缺测点的最大距离，这里距离都是用网格点位置而不是经纬度</span>
+    <span class="n">convect_union</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="n">test</span><span class="o">.</span><span class="n">label</span>
+    <span class="n">convect_union</span><span class="p">[</span><span class="n">convect_union</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">tmp_prop</span> <span class="o">=</span> <span class="n">regionprops</span><span class="p">(</span><span class="n">convect_union</span><span class="p">,</span> <span class="n">truth</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">part_L1</span> <span class="o">=</span> <span class="n">calc_dis</span><span class="p">(</span><span class="o">*</span><span class="n">truth</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;centroid&quot;</span><span class="p">],</span> <span class="o">*</span><span class="n">test</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;centroid&quot;</span><span class="p">])</span>
+    
+    <span class="c1"># L2</span>
+    <span class="k">def</span> <span class="nf">weighted_distance</span><span class="p">(</span><span class="n">tmp</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Calculate Weighted Averaged Distance.</span>
+<span class="sd">        Calculate the weighted averaged distance between the centers of mass of the individual objects,</span>
+<span class="sd">        and the center of mass of the total precipitation field</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tmp</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Weighted Averaged Distance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;centroid&quot;</span><span class="p">]</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">calc_dis</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="s2">&quot;centroid&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">],</span>
+                          <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">tmp</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">distance</span> <span class="o">/</span> <span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">])</span>
+    
+    <span class="n">part_L2</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">weighted_distance</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span> <span class="o">-</span> <span class="n">weighted_distance</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">part_L1</span> <span class="o">+</span> <span class="n">part_L2</span><span class="p">)</span> <span class="o">/</span> <span class="n">calc_dis</span><span class="p">(</span><span class="o">*</span><span class="n">tmp_prop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;bbox&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Space"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space">[文档]</a><span class="k">class</span> <span class="nc">Space</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;空间评分检验</span>
+<span class="sd">    </span>
+<span class="sd">    包含SAL和FSS空间检验</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="Space.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.calc">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;算法人员调用进行相关评分计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实值数组</span>
+<span class="sd">            test : 待测试值数组</span>
+
+<span class="sd">       Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1, 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+<span class="sd">            acc(int): 默认为 ``4``。计算结果的精度值，即保留有效小数点位数</span>
+<span class="sd">            save_path(str): 默认为 ``./space.csv``.评分结果csv文件的保存路径。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># SAL</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">SAL</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_path&quot;</span><span class="p">,</span> <span class="s2">&quot;./space.csv&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">]:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;SAL Calculated Done! Result has been saved in &quot;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Space.props"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.props">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">props</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Property</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 计算图像区域所有落区的属性。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data(:obj:`ndarray`): 需要划分落区的数据矩阵。</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1, 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            落区的属性标签</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">999</span><span class="p">])</span>
+        <span class="n">min_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;min_points&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        
+        <span class="c1"># 落区划分</span>
+        <span class="n">convert</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">threshold</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">exist_flag</span><span class="p">)</span>
+        <span class="n">convert</span> <span class="o">=</span> <span class="n">label</span><span class="p">(</span><span class="n">convert</span><span class="p">,</span> <span class="n">connectivity</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tmp_props</span> <span class="o">=</span> <span class="n">regionprops</span><span class="p">(</span><span class="n">convert</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        
+        <span class="c1"># 去除小于 min_points点数的 落区</span>
+        <span class="k">if</span> <span class="n">tmp_props</span><span class="p">:</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">tmp_props</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_points</span><span class="p">:</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">convert</span> <span class="o">==</span> <span class="n">prop</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">convert</span> <span class="o">*=</span> <span class="n">flag</span>
+            <span class="n">convert</span><span class="p">[</span><span class="n">convert</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">Property</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">convert</span><span class="p">,</span> <span class="n">all_prop</span><span class="o">=</span><span class="n">regionprops</span><span class="p">(</span><span class="n">convert</span><span class="p">,</span> <span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Property</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">convert</span><span class="p">,</span> <span class="n">all_prop</span><span class="o">=</span><span class="p">[],</span> <span class="n">props</span><span class="o">=</span><span class="p">[])</span></div>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_pre_transform</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                       <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                       <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Property</span><span class="p">,</span> <span class="n">Property</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
+            <span class="n">truth</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">truth</span><span class="p">,</span> <span class="n">test</span>
+    
+<div class="viewcode-block" id="Space.S"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.S">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;结构分值计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值数据或真值落区属性(:obj:`Property`)</span>
+<span class="sd">            test :  测试值数据或测试值落区属性(:obj:`Property`)</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1， 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            结构得分(S)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc_S</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Space.A"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.A">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;振幅分值计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值数据或真值落区属性(:obj:`Property`)</span>
+<span class="sd">            test :  测试值数据或测试值落区属性(:obj:`Property`)</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1， 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            振幅得分(A)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc_A</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Space.L"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.L">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">L</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; 落区分值计算</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真值数据或真值落区属性(:obj:`Property`)</span>
+<span class="sd">            test :  测试值数据或测试值落区属性(:obj:`Property`)</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1， 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            落区得分(L)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] Wernli, H., Paulat, M., Hagen, M., &amp; Frei, C.M. (2008). SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts. Monthly Weather Review, 136, 4470-4487.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc_L</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Space.SAL"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.SAL">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">SAL</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; SAL空间检验</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实值数组</span>
+<span class="sd">            test : 待测试值数组</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1， 999]``。SAL空间检验的边界阈值范围。</span>
+<span class="sd">            min_points(list): 默认为 ``15``。SAL空间检验的最小落区格点数目。</span>
+<span class="sd">            acc(int): 默认为 ``4``。计算结果的精度值，即保留有效小数点位数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SAL检验结果</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 原始数据预处理</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">999</span><span class="p">])</span>
+        <span class="n">min_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;min_points&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">truth</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">min_points</span><span class="o">=</span><span class="n">min_points</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">min_points</span><span class="o">=</span><span class="n">min_points</span><span class="p">)</span>
+        
+        <span class="c1"># SAL</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">S</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">),</span> <span class="n">acc</span><span class="p">),</span>
+                   <span class="n">A</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">A</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
+                   <span class="n">L</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">L</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_windowFSS</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                   <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w_hh</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w_hw</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                   <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">w_hh</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">w_hh</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="n">w_hw</span><span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">w_hw</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">tmp_flag</span> <span class="o">=</span> <span class="n">exist_flag</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">w_hh</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">w_hh</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="n">w_hw</span><span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">w_hw</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tmp_flag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="n">tmp_flag</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+<div class="viewcode-block" id="Space.FSS"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.FSS">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">FSS</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;FSS(Fraction Skill Score)空间检验。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            truth : 真实值数组</span>
+<span class="sd">            test : 待测试值数组</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            window_size(list): 默认为 ``[3, 3]``。卷积窗口宽度的列表，以格点数为单位</span>
+<span class="sd">            threshold(list): 默认为 ``[0.1]``。事件发生的阈值</span>
+<span class="sd">            exist_flag(:obj:`ndarray`): 默认为 ``None``。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            shape与threshold相同，根据不同阈值划分的FSS苹果结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected &quot;np.ndarray&quot;,&#39;</span>
+                                                        <span class="sa">f</span><span class="s2">&quot; but got the type of truth: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected &quot;np.ndarray&quot;,&#39;</span>
+                                                       <span class="sa">f</span><span class="s2">&quot; but got the type of test: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">assert</span> <span class="n">truth</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected 2-Dim, but got the dimension of the truth: </span><span class="si">{</span><span class="n">truth</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected 2-Dim, but got the dimension of the test: </span><span class="si">{</span><span class="n">test</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">assert</span> <span class="n">truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected the same shape, but the shape of truth - </span><span class="si">{</span><span class="n">truth</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                                                     <span class="sa">f</span><span class="s2">&quot; is different with test - </span><span class="si">{</span><span class="n">test</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+        
+        <span class="n">window_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;window_size&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;threshold&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">])</span>
+        <span class="n">exist_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exist_flag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
+        
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">wHH</span><span class="p">,</span> <span class="n">wHW</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">window_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">window_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">fss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">threshold</span><span class="p">):</span>
+            <span class="n">truthHap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span>
+            <span class="n">truthHap</span><span class="p">[</span><span class="n">truth</span> <span class="o">&gt;=</span> <span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            
+            <span class="n">testHap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="n">testHap</span><span class="p">[</span><span class="n">test</span> <span class="o">&gt;=</span> <span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wHH</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">wHH</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wHW</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="n">wHW</span><span class="p">):</span>
+                    <span class="n">truth_p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_windowFSS</span><span class="p">(</span><span class="n">truthHap</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">wHH</span><span class="p">,</span> <span class="n">wHW</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+                    <span class="n">test_p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_windowFSS</span><span class="p">(</span><span class="n">testHap</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">wHH</span><span class="p">,</span> <span class="n">wHW</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">truth_p</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">test_p</span><span class="p">)):</span>
+                        <span class="n">a1</span> <span class="o">+=</span> <span class="p">(</span><span class="n">truth_p</span> <span class="o">-</span> <span class="n">test_p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="n">a2</span> <span class="o">+=</span> <span class="n">truth_p</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">test_p</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">fss</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">a1</span> <span class="o">/</span> <span class="p">(</span><span class="n">a2</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">)</span>
+        <span class="c1"># 去除结果值</span>
+        <span class="n">fss</span><span class="p">[</span><span class="n">fss</span> <span class="o">!=</span> <span class="n">fss</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">fss</span></div>
+    
+<div class="viewcode-block" id="Space.Grid"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.Grid">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Grid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            truth:</span>
+<span class="sd">            test:</span>
+<span class="sd">            names:</span>
+<span class="sd">            </span>
+<span class="sd">        Keyword Args:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            格点检验结果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Fang linwanghao
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
