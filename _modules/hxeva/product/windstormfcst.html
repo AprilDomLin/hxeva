@@ -172,15 +172,16 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        name : 默认为 ``WindStorm``。产品名称。</span>
+<span class="sd">        extend : 默认为 ``None``。经纬度范围。</span>
+<span class="sd">        </span>
+<span class="sd">    Keyword Args:</span>
 <span class="sd">        log_root : 默认为 ``./logs``。日志文件夹根目录</span>
 <span class="sd">        max_counter: 默认为 ``10``。文件错误最大循环等待次数</span>
 <span class="sd">        shape: 默认为 ``None``。评估数据形状大小</span>
-<span class="sd">        extend : 默认为 ``None``。经纬度范围。</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;WindStorm&quot;</span><span class="p">,</span> <span class="n">log_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./logs&quot;</span><span class="p">,</span> <span class="n">max_counter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                 <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">WindStormFcstSta</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">log_root</span><span class="o">=</span><span class="n">log_root</span><span class="p">,</span> <span class="n">max_counter</span><span class="o">=</span><span class="n">max_counter</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;WindStorm&quot;</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WindStormFcstSta</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extend</span> <span class="o">=</span> <span class="n">extend</span>
 
 <div class="viewcode-block" id="WindStormFcstSta.read_lpd"><a class="viewcode-back" href="../../../generated/hxeva.product.windstormfcst.WindStormFcstSta.html#hxeva.product.windstormfcst.WindStormFcstSta.read_lpd">[文档]</a>    <span class="nd">@classmethod</span>
@@ -219,7 +220,7 @@
 <span class="sd">            test_file : 待测数据信息。参数信息关键字参考CMAE config。</span>
 
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            save(str): 检验评估产品保存路径规则。</span>
+<span class="sd">            save(dict): 检验评估产品保存路径规则。</span>
 <span class="sd">            timefcst(list): 预报时长表。涵盖预报产品所有的预报时长的列表。</span>
 <span class="sd">            key(list): 默认为 ``WindStorm``。检验评估的变量关键字。</span>
 <span class="sd">            threshold(list): 默认为 ``[0, 50, 101]``。强降水概率预报阈值表。</span>

@@ -17,3 +17,15 @@
     comwind
 
 
+
+.. currentmodule:: hxeva.utils
+其他计算
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+
+    administration.read_boundary
+    pool.pool2d
