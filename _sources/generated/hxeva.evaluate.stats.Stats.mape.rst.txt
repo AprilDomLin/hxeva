@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.stats.Stats.mape
+===============================
+
+.. currentmodule:: hxeva.evaluate.stats
+
+.. automethod:: Stats.mape

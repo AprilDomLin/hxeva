@@ -1,0 +1,6 @@
+﻿hxeva.product.base.DataReader.catch
+===================================
+
+.. currentmodule:: hxeva.product.base
+
+.. automethod:: DataReader.catch

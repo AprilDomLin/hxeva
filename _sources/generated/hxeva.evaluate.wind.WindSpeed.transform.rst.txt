@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.WindSpeed.transform
+=======================================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: WindSpeed.transform

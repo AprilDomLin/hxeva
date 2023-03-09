@@ -9,12 +9,13 @@
 .. autosummary::
     :toctree: generated
     :nosignatures:
-    :template: classtemplate.rst
-    
-    BaseProdEvaluate
-    DataReader 
-    Extend 
-    Log 
+
+    Extend
+    DataReader.catch
+    DataReader.load
+    DataReader.load_nc
+    DataReader.load_grb
+    DataReader.merge_file
 
 
 .. currentmodule:: hxeva.product.continueparam
@@ -85,6 +86,7 @@
 
 
 .. currentmodule:: hxeva.product.radafcst
+
 
 雷达短时预报检验产品
 --------------------------------

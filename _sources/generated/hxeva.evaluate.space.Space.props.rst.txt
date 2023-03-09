@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.space.Space.props
+================================
+
+.. currentmodule:: hxeva.evaluate.space
+
+.. automethod:: Space.props

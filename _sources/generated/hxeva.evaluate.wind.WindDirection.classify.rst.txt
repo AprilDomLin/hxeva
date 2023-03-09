@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.WindDirection.classify
+==========================================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: WindDirection.classify

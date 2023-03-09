@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.stats.Stats.calc
+===============================
+
+.. currentmodule:: hxeva.evaluate.stats
+
+.. automethod:: Stats.calc

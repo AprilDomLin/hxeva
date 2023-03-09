@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.WindDirection.transform
+===========================================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: WindDirection.transform

@@ -16,9 +16,8 @@
     dewind 
     comwind
 
-
-
 .. currentmodule:: hxeva.utils
+
 其他计算
 ================================
 .. autosummary::
@@ -26,6 +25,16 @@
     :nosignatures:
     :template: classtemplate.rst
 
-
     administration.read_boundary
     pool.pool2d
+
+.. currentmodule:: hxeva.config
+
+常量信息
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    Threshold

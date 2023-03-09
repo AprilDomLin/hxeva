@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.space.Space.L
+============================
+
+.. currentmodule:: hxeva.evaluate.space
+
+.. automethod:: Space.L

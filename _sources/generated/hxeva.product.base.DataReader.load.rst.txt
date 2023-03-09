@@ -1,0 +1,6 @@
+﻿hxeva.product.base.DataReader.load
+==================================
+
+.. currentmodule:: hxeva.product.base
+
+.. automethod:: DataReader.load

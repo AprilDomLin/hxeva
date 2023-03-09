@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.Wind.FSs
+============================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: Wind.FSs

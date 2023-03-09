@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="搜索" href="search.html" />
-    <link rel="next" title="BaseProdEvaluate" href="generated/hxeva.product.base.BaseProdEvaluate.html" />
-    <link rel="prev" title="WindDirection" href="generated/hxeva.evaluate.wind.WindDirection.html" /> 
+    <link rel="next" title="Extend" href="generated/hxeva.product.base.Extend.html" />
+    <link rel="prev" title="Property" href="generated/hxeva.evaluate.space.Property.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,16 +89,18 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">简介</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">使用示例</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="hxeva.html">API文档</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="evaluate.html">检验评估指标基础模块</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id2">评分检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id3">空间检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id4">统计误差检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id5">风场检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluate.html">评分检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id2">空间检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id3">统计误差检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id4">风场检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">业务基础模块</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.BaseProdEvaluate.html">BaseProdEvaluate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.html">DataReader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.Extend.html">Extend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.Log.html">Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.catch.html">hxeva.product.base.DataReader.catch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.load.html">hxeva.product.base.DataReader.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.load_nc.html">hxeva.product.base.DataReader.load_nc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.load_grb.html">hxeva.product.base.DataReader.load_grb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/hxeva.product.base.DataReader.merge_file.html">hxeva.product.base.DataReader.merge_file</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">数值模式产品</a><ul>
@@ -135,6 +137,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">气象学计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#id2">其他计算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#id3">常量信息</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="others.html">其他</a></li>
@@ -212,17 +215,23 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/hxeva.product.base.BaseProdEvaluate.html#hxeva.product.base.BaseProdEvaluate" title="hxeva.product.base.BaseProdEvaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseProdEvaluate</span></code></a></p></td>
-<td><p>业务检验基类</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.html#hxeva.product.base.DataReader" title="hxeva.product.base.DataReader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader</span></code></a></p></td>
-<td><p>格点数据读取器</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/hxeva.product.base.Extend.html#hxeva.product.base.Extend" title="hxeva.product.base.Extend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Extend</span></code></a></p></td>
 <td><p>数据空间信息</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/hxeva.product.base.Log.html#hxeva.product.base.Log" title="hxeva.product.base.Log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Log</span></code></a></p></td>
-<td><p>业务日志记录器</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.catch.html#hxeva.product.base.DataReader.catch" title="hxeva.product.base.DataReader.catch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader.catch</span></code></a></p></td>
+<td><p>抓取目标数据路径</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.load.html#hxeva.product.base.DataReader.load" title="hxeva.product.base.DataReader.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader.load</span></code></a></p></td>
+<td><p>加载格点数据</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.load_nc.html#hxeva.product.base.DataReader.load_nc" title="hxeva.product.base.DataReader.load_nc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader.load_nc</span></code></a></p></td>
+<td><p>NC格式数据的读取。</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.load_grb.html#hxeva.product.base.DataReader.load_grb" title="hxeva.product.base.DataReader.load_grb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader.load_grb</span></code></a></p></td>
+<td><p>GRIB格式数据的读取。</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/hxeva.product.base.DataReader.merge_file.html#hxeva.product.base.DataReader.merge_file" title="hxeva.product.base.DataReader.merge_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReader.merge_file</span></code></a></p></td>
+<td><p>组合预测数据的文件名(启报时间、预报时间)</p></td>
 </tr>
 </tbody>
 </table>
@@ -332,10 +341,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/hxeva.product.base.BaseProdEvaluate.html" class="btn btn-neutral float-right" title="BaseProdEvaluate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/hxeva.product.base.Extend.html" class="btn btn-neutral float-right" title="Extend" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="generated/hxeva.evaluate.wind.WindDirection.html" class="btn btn-neutral float-left" title="WindDirection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="generated/hxeva.evaluate.space.Property.html" class="btn btn-neutral float-left" title="Property" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

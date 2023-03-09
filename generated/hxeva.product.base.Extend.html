@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
-    <link rel="next" title="Log" href="hxeva.product.base.Log.html" />
-    <link rel="prev" title="DataReader" href="hxeva.product.base.DataReader.html" /> 
+    <link rel="next" title="hxeva.product.base.DataReader.catch" href="hxeva.product.base.DataReader.catch.html" />
+    <link rel="prev" title="业务基础模块" href="../product.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,22 +89,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">简介</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">使用示例</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../hxeva.html">API文档</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html">检验评估指标基础模块</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id2">评分检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">空间检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">统计误差检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">风场检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html">评分检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id2">空间检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">统计误差检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">风场检验</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../product.html">业务基础模块</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.BaseProdEvaluate.html">BaseProdEvaluate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.html">DataReader</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Extend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.Log.html">Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.catch.html">hxeva.product.base.DataReader.catch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.load.html">hxeva.product.base.DataReader.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.load_nc.html">hxeva.product.base.DataReader.load_nc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.load_grb.html">hxeva.product.base.DataReader.load_grb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.product.base.DataReader.merge_file.html">hxeva.product.base.DataReader.merge_file</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id7">短临雷达产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id2">其他计算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id3">常量信息</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
@@ -183,6 +187,8 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">hxeva.product.base.</span></span><span class="sig-name descname"><span class="pre">Extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/product/base.html#Extend"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.product.base.Extend" title="永久链接至目标">¶</a></dt>
 <dd><p>数据空间信息</p>
 <p>包括：起始经度(slon)、结束经度(elon)、起始纬度(slat)、结束纬度(elat)、经纬度精度(error) 和 气压高度层(plev)。</p>
+<dl class="field-list simple">
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hxeva.product.base.Extend.slat">
 <span class="sig-name descname"><span class="pre">slat</span></span><a class="headerlink" href="#hxeva.product.base.Extend.slat" title="永久链接至目标">¶</a></dt>
@@ -249,18 +255,6 @@
 </dl>
 </dd></dl>
 
-<dl class="field-list simple">
-<dt class="field-odd">参数</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>slat</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 起始纬度。</p></li>
-<li><p><strong>elat</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 起始径度。</p></li>
-<li><p><strong>slon</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 结束纬度。</p></li>
-<li><p><strong>elon</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 结束经度。</p></li>
-<li><p><strong>error</strong> (<em>float</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">0.05</span></code>。经纬度误差。</p></li>
-<li><p><strong>plev</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>list</em><em>, </em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。气压高度层</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -273,10 +267,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="hxeva.product.base.Log.html" class="btn btn-neutral float-right" title="Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="hxeva.product.base.DataReader.catch.html" class="btn btn-neutral float-right" title="hxeva.product.base.DataReader.catch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="hxeva.product.base.DataReader.html" class="btn btn-neutral float-left" title="DataReader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../product.html" class="btn btn-neutral float-left" title="业务基础模块" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -163,9 +163,6 @@
 <span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">label</span><span class="p">,</span> <span class="n">regionprops</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseEvaluate</span>
-<span class="kn">from</span> <span class="nn">.scores</span> <span class="kn">import</span> <span class="n">Score</span>
-<span class="kn">from</span> <span class="nn">.stats</span> <span class="kn">import</span> <span class="n">Stats</span>
-<span class="kn">from</span> <span class="nn">.wind</span> <span class="kn">import</span> <span class="n">Wind</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">calc_dis</span>
 
 <span class="n">Property</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Property&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;all_prop&quot;</span><span class="p">,</span> <span class="s2">&quot;props&quot;</span><span class="p">],</span> <span class="n">defaults</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -192,7 +189,7 @@
     <span class="k">return</span> <span class="n">_default</span>
 
 
-<div class="viewcode-block" id="calc_S"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_S.html#hxeva.evaluate.space.calc_S">[文档]</a><span class="k">def</span> <span class="nf">calc_S</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">calc_S</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;结构分值计算</span>
 
 <span class="sd">    Args:</span>
@@ -222,10 +219,10 @@
     
     <span class="n">v_truth</span> <span class="o">=</span> <span class="n">scaled_volume</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span>
     <span class="n">v_test</span> <span class="o">=</span> <span class="n">scaled_volume</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">-</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">+</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="mf">0.5</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">-</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">v_test</span> <span class="o">+</span> <span class="n">v_truth</span><span class="p">)</span> <span class="o">/</span> <span class="mf">0.5</span>
 
 
-<div class="viewcode-block" id="calc_A"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_A.html#hxeva.evaluate.space.calc_A">[文档]</a><span class="k">def</span> <span class="nf">calc_A</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">calc_A</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;振幅分值计算</span>
 
 <span class="sd">    Args:</span>
@@ -240,10 +237,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d_truth</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span>
     <span class="n">d_test</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">d_test</span> <span class="o">-</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">d_test</span> <span class="o">+</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">d_test</span> <span class="o">-</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">d_test</span> <span class="o">+</span> <span class="n">d_truth</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="calc_L"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.calc_L.html#hxeva.evaluate.space.calc_L">[文档]</a><span class="k">def</span> <span class="nf">calc_L</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">calc_L</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">Property</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; 落区分值计算</span>
 
 <span class="sd">    Args:</span>
@@ -281,16 +278,16 @@
         <span class="k">return</span> <span class="n">distance</span> <span class="o">/</span> <span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;mean_intensity&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="o">.</span><span class="n">all_prop</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">])</span>
     
     <span class="n">part_L2</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">weighted_distance</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span> <span class="o">-</span> <span class="n">weighted_distance</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">part_L1</span> <span class="o">+</span> <span class="n">part_L2</span><span class="p">)</span> <span class="o">/</span> <span class="n">calc_dis</span><span class="p">(</span><span class="o">*</span><span class="n">tmp_prop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;bbox&quot;</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">part_L1</span> <span class="o">+</span> <span class="n">part_L2</span><span class="p">)</span> <span class="o">/</span> <span class="n">calc_dis</span><span class="p">(</span><span class="o">*</span><span class="n">tmp_prop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;bbox&quot;</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="Space"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space">[文档]</a><span class="k">class</span> <span class="nc">Space</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Space</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;空间评分检验</span>
 <span class="sd">    </span>
 <span class="sd">    包含SAL和FSS空间检验</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-<div class="viewcode-block" id="Space.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.calc">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.calc.html#hxeva.evaluate.space.Space.calc">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;算法人员调用进行相关评分计算</span>
 
@@ -315,7 +312,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;SAL Calculated Done! Result has been saved in &quot;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Space.props"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.props">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.props"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.props.html#hxeva.evaluate.space.Space.props">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">props</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Property</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; 计算图像区域所有落区的属性。</span>
 
@@ -362,7 +359,7 @@
             <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">props</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">truth</span><span class="p">,</span> <span class="n">test</span>
     
-<div class="viewcode-block" id="Space.S"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.S">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.S"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.S.html#hxeva.evaluate.space.Space.S">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;结构分值计算</span>
 
@@ -384,7 +381,7 @@
         <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calc_S</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Space.A"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.A">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.A"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.A.html#hxeva.evaluate.space.Space.A">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;振幅分值计算</span>
 
@@ -406,7 +403,7 @@
         <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calc_A</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Space.L"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.L">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.L"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.L.html#hxeva.evaluate.space.Space.L">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">L</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">Property</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; 落区分值计算</span>
 
@@ -428,7 +425,7 @@
         <span class="n">truth</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_pre_transform</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calc_L</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Space.SAL"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.SAL">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.SAL"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.SAL.html#hxeva.evaluate.space.Space.SAL">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">SAL</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; SAL空间检验</span>
 
@@ -472,7 +469,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     
-<div class="viewcode-block" id="Space.FSS"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.FSS">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Space.FSS"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.FSS.html#hxeva.evaluate.space.Space.FSS">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">FSS</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;FSS(Fraction Skill Score)空间检验。</span>
 
@@ -526,7 +523,7 @@
         <span class="n">fss</span><span class="p">[</span><span class="n">fss</span> <span class="o">!=</span> <span class="n">fss</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">return</span> <span class="n">fss</span></div>
     
-<div class="viewcode-block" id="Space.Grid"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.space.Space.html#hxeva.evaluate.space.Space.Grid">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Grid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
@@ -540,7 +537,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            格点检验结果</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div></div>
+        <span class="k">pass</span>
 </pre></div>
 
            </div>

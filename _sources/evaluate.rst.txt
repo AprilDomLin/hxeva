@@ -2,40 +2,27 @@
     :class: hidden-section
 
 
-.. currentmodule:: hxeva.evaluate.base
-
-检验评估指标基础模块
-================================
-.. autosummary::
-    :toctree: generated
-    :nosignatures:
-    :template: classtemplate.rst
-
-    BaseEvaluate
-
-
-.. currentmodule:: hxeva.evaluate.scores
+.. currentmodule:: hxeva.evaluate.score
 
 评分检验
 ================================
 .. autosummary::
     :toctree: generated
     :nosignatures:
-    :template: classtemplate.rst
 
-    Score
-    calc_acc
-    calc_bias
-    calc_ets
-    calc_far
-    calc_hss
-    calc_po
-    calc_pod
-    calc_ra
-    calc_rd
-    calc_sr
-    calc_ts
-    ContingencyTable
+    Score.acc
+    Score.bias
+    Score.calc
+    Score.classify
+    Score.ets
+    Score.expand
+    Score.far
+    Score.hss
+    Score.po
+    Score.pod
+    Score.sr
+    Score.scores
+    Score.ts
 
 
 .. currentmodule:: hxeva.evaluate.space
@@ -45,13 +32,14 @@
 .. autosummary::
     :toctree: generated
     :nosignatures:
-    :template: classtemplate.rst
 
-    Space
-    calc_S
-    calc_A
-    calc_L
-    Property
+    Space.calc
+    Space.props
+    Space.S
+    Space.A
+    Space.L
+    Space.SAL
+    Space.FSS
 
 
 .. currentmodule:: hxeva.evaluate.stats
@@ -61,17 +49,19 @@
 .. autosummary::
     :toctree: generated
     :nosignatures:
-    :template: classtemplate.rst
 
-    calc_cc
-    calc_mae
-    calc_mbe
-    calc_mpe
-    calc_mbr
-    calc_mape
-    calc_nse
-    calc_rmse
-    Stats
+    Stats.calc
+    Stats.cc
+    Stats.mae
+    Stats.mape
+    Stats.mbe
+    Stats.mbr
+    Stats.nme
+    Stats.nmae
+    Stats.mpe
+    Stats.nse
+    Stats.rmse
+    Stats.stats
 
 
 .. currentmodule:: hxeva.evaluate.wind
@@ -81,8 +71,34 @@
 .. autosummary::
     :toctree: generated
     :nosignatures:
+
+    WindDirection.classify
+    WindDirection.transform
+    WindSpeed.classify
+    WindSpeed.transform
+    WindSpeed.severer
+    WindSpeed.weaker
+    Wind.accuracy
+    Wind.ACd
+    Wind.ACs
+    Wind.ACz
+    Wind.FSs
+    Wind.FWs
+    Wind.SCd
+    Wind.score
+    Wind.SCs
+    Wind.winddirection
+    Wind.windspeed
+
+
+.. currentmodule:: hxeva.evaluate
+
+数据结构
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
     :template: classtemplate.rst
 
-    Wind
-    WindSpeed
-    WindDirection
+    score.ContingencyTable
+    space.Property

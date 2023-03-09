@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.Wind.SCs
+============================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: Wind.SCs

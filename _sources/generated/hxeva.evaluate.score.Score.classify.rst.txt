@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.score.Score.classify
+===================================
+
+.. currentmodule:: hxeva.evaluate.score
+
+.. automethod:: Score.classify

@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.score.Score.expand
+=================================
+
+.. currentmodule:: hxeva.evaluate.score
+
+.. automethod:: Score.expand

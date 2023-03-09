@@ -1,0 +1,6 @@
+﻿hxeva.product.base.DataReader.merge\_file
+=========================================
+
+.. currentmodule:: hxeva.product.base
+
+.. automethod:: DataReader.merge_file

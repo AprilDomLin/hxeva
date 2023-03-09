@@ -170,7 +170,7 @@
     <span class="k">return</span> <span class="n">exist_flag</span>
 
 
-<div class="viewcode-block" id="calc_cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_cc.html#hxeva.evaluate.stats.calc_cc">[文档]</a><span class="k">def</span> <span class="nf">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 相关系数计算(Correlation Coefficient, CC or R2)</span>
 <span class="sd">    </span>
 <span class="sd">    :math:`CC = \\frac{\\sum{(truth_i - \\overline{truth}) * (test_i - \\overline{test})}}{\\sqrt{\\sum{(truth_i - \\overline{truth})^2} * \\sum{(test_i - \\overline{test})^2}}}`</span>
@@ -194,10 +194,10 @@
         <span class="n">cc</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">cc</span></div>
+    <span class="k">return</span> <span class="n">cc</span>
 
 
-<div class="viewcode-block" id="calc_mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mae.html#hxeva.evaluate.stats.calc_mae">[文档]</a><span class="k">def</span> <span class="nf">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均绝对误差(Mean Absolute Error, MAE)</span>
 <span class="sd">    </span>
@@ -220,10 +220,10 @@
         <span class="n">mae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mae</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">mae</span></div>
+    <span class="k">return</span> <span class="n">mae</span>
 
 
-<div class="viewcode-block" id="calc_mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mape.html#hxeva.evaluate.stats.calc_mape">[文档]</a><span class="k">def</span> <span class="nf">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均绝对误差百分比(Mean Absolute Percentage Error, MAPE)</span>
 <span class="sd">    </span>
@@ -252,10 +252,10 @@
             <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">mape</span></div>
+    <span class="k">return</span> <span class="n">mape</span>
 
 
-<div class="viewcode-block" id="calc_mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbe.html#hxeva.evaluate.stats.calc_mbe">[文档]</a><span class="k">def</span> <span class="nf">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; 平均误差(Mean Bias Error, MBE)</span>
 <span class="sd">    </span>
@@ -278,10 +278,10 @@
         <span class="n">mbe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mbe</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mbe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">mbe</span></div>
+    <span class="k">return</span> <span class="n">mbe</span>
 
 
-<div class="viewcode-block" id="calc_mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mbr.html#hxeva.evaluate.stats.calc_mbr">[文档]</a><span class="k">def</span> <span class="nf">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;平均偏差比(Mean Bias Ratio, MBR)</span>
 
@@ -310,7 +310,7 @@
             <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mbr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">mbr</span></div>
+    <span class="k">return</span> <span class="n">mbr</span>
 
 
 <span class="k">def</span> <span class="nf">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -375,7 +375,7 @@
     <span class="k">return</span> <span class="n">nmae</span>
 
 
-<div class="viewcode-block" id="calc_mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_mpe.html#hxeva.evaluate.stats.calc_mpe">[文档]</a><span class="k">def</span> <span class="nf">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;平均偏差百分比(Mean Percentage Error, MPE)</span>
 
@@ -404,10 +404,10 @@
             <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mpe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">mpe</span></div>
+    <span class="k">return</span> <span class="n">mpe</span>
 
 
-<div class="viewcode-block" id="calc_nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_nse.html#hxeva.evaluate.stats.calc_nse">[文档]</a><span class="k">def</span> <span class="nf">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;纳什效率系数(Nash–Sutcliffe efficiency score, NSE)</span>
 
@@ -436,10 +436,10 @@
             <span class="n">nse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">nse</span></div>
+    <span class="k">return</span> <span class="n">nse</span>
 
 
-<div class="viewcode-block" id="calc_rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.calc_rmse.html#hxeva.evaluate.stats.calc_rmse">[文档]</a><span class="k">def</span> <span class="nf">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">mid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;均方根误差计算(Root-Mean-Square Error, RMSE)</span>
 
@@ -462,10 +462,10 @@
         <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rmse</span><span class="p">[</span><span class="n">exist_flag</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">rmse</span></div>
+    <span class="k">return</span> <span class="n">rmse</span>
 
 
-<div class="viewcode-block" id="Stats"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats">[文档]</a><span class="k">class</span> <span class="nc">Stats</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Stats</span><span class="p">(</span><span class="n">BaseEvaluate</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;统计误差指标计算</span>
 <span class="sd">    </span>
 <span class="sd">    包含基础统计误差指标的计算，如均方根误差(RMSE)、平均绝对误差(MAE)、相关系数(CC)等。</span>
@@ -474,7 +474,7 @@
 <span class="sd">        可以直接通过调用 `calc` 和 `scores` 方法计算多种统计误差指标。</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-<div class="viewcode-block" id="Stats.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.calc">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.calc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.calc.html#hxeva.evaluate.stats.Stats.calc">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;算法人员调用进行相关统计误差计算</span>
 
@@ -512,7 +512,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;Statistics Calculated Done! Result has been saved in &quot;</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.cc">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.cc"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.cc.html#hxeva.evaluate.stats.Stats.cc">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">cc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 相关系数计算(Correlation Coefficient, CC or R2)</span>
 
@@ -529,7 +529,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_cc</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mae">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.mae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.mae.html#hxeva.evaluate.stats.Stats.mae">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">mae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均绝对误差(Mean Absolute Error, MAE)</span>
 
@@ -545,7 +545,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_mae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mape">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.mape"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.mape.html#hxeva.evaluate.stats.Stats.mape">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">mape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均绝对误差百分比(Mean Absolute Percentage Error, MAPE)</span>
 
@@ -561,7 +561,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_mape</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mbe">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.mbe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.mbe.html#hxeva.evaluate.stats.Stats.mbe">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">mbe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot; 平均误差(Mean Bias Error, MBE)</span>
 
@@ -577,7 +577,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_mbe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mbr">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.mbr"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.mbr.html#hxeva.evaluate.stats.Stats.mbr">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">mbr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;平均偏差比(Mean Bias Ratio, MBR)</span>
 
@@ -593,7 +593,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_mbr</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.nme"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nme">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.nme"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.nme.html#hxeva.evaluate.stats.Stats.nme">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">nme</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;规范化平均偏差(Normalized Mean Error, NME)</span>
 
@@ -609,7 +609,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_nme</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.nmae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nmae">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.nmae"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.nmae.html#hxeva.evaluate.stats.Stats.nmae">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">nmae</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;规范化平均绝对偏差(Normalized Mean Absolute Error, NMAE)</span>
 
@@ -625,7 +625,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_nmae</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.mpe">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.mpe"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.mpe.html#hxeva.evaluate.stats.Stats.mpe">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">mpe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;平均偏差百分比(Mean Percentage Error, MPE)</span>
 
@@ -641,7 +641,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_mpe</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.nse">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.nse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.nse.html#hxeva.evaluate.stats.Stats.nse">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">nse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
             <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;纳什效率系数(Nash–Sutcliffe efficiency score, NSE)</span>
@@ -659,7 +659,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_nse</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.rmse">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.rmse"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.rmse.html#hxeva.evaluate.stats.Stats.rmse">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;均方根误差计算(Root-Mean-Square Error, RMSE)</span>
 
@@ -675,7 +675,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">calc_rmse</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="o">=</span><span class="n">exist_flag</span><span class="p">,</span> <span class="n">mid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Stats.stats"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.html#hxeva.evaluate.stats.Stats.stats">[文档]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Stats.stats"><a class="viewcode-back" href="../../../generated/hxeva.evaluate.stats.Stats.stats.html#hxeva.evaluate.stats.Stats.stats">[文档]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">test</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;更灵活的统计误差调用方式，类似calc。但没有封装结果保存与打印。</span>
 
@@ -708,7 +708,7 @@
         <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
             <span class="n">res</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())(</span><span class="n">truth</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">exist_flag</span><span class="p">),</span> <span class="n">acc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span></div></div>
+        <span class="k">return</span> <span class="n">res</span></div>
 </pre></div>
 
            </div>
