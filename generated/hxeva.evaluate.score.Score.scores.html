@@ -100,6 +100,8 @@
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.hss.html">hxeva.evaluate.score.Score.hss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.po.html">hxeva.evaluate.score.Score.po</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.pod.html">hxeva.evaluate.score.Score.pod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ra.html">hxeva.evaluate.score.Score.ra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.rd.html">hxeva.evaluate.score.Score.rd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.sr.html">hxeva.evaluate.score.Score.sr</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">hxeva.evaluate.score.Score.scores</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ts.html">hxeva.evaluate.score.Score.ts</a></li>
@@ -108,7 +110,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id2">空间检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">统计误差检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">风场检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html">业务基础模块</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
@@ -116,6 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id2">其他计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id3">常量信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id4">数据结构</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
@@ -191,27 +193,24 @@
 <h1>hxeva.evaluate.score.Score.scores<a class="headerlink" href="#hxeva-evaluate-score-score-scores" title="永久链接至标题">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.score.Score.scores">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-prename descclassname"><span class="pre">Score.</span></span><span class="sig-name descname"><span class="pre">scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/score.html#Score.scores"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.score.Score.scores" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-prename descclassname"><span class="pre">Score.</span></span><span class="sig-name descname"><span class="pre">scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/score.html#Score.scores"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.score.Score.scores" title="永久链接至目标">¶</a></dt>
 <dd><p>更灵活的评分调用方式，类似calc。但没有封装结果保存与打印。</p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组</p></li>
-</ul>
-</dd>
-<dt class="field-even">关键字参数</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>threshold</strong> (<em>list</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">2.5,</span> <span class="pre">8.0,</span> <span class="pre">16.0,</span> <span class="pre">150]</span></code>。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</p></li>
-<li><p><strong>level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
-<li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
-<li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
-<li><p><strong>window_size</strong> (<em>tuple</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
+<li><p><strong>threshold</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0.1,</span> <span class="pre">2.5,</span> <span class="pre">8.0,</span> <span class="pre">16.0,</span> <span class="pre">150]</span></code>。 分类阈值表，阈值列表最小值和最大值以外的值，认为是异常值，不纳入计算。</p></li>
+<li><p><strong>level</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...</span> <span class="pre">len(threshold)</span> <span class="pre">-</span> <span class="pre">1]</span></code>。 需要计算评分的等级。</p></li>
+<li><p><strong>names</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">[&quot;TS&quot;,</span> <span class="pre">&quot;PO&quot;,</span> <span class="pre">&quot;FAR&quot;,</span> <span class="pre">&quot;POD&quot;,</span> <span class="pre">&quot;ACC&quot;,</span> <span class="pre">&quot;HSS&quot;]</span></code>。需要计算的评分内容。</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code>。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
+<li><p><strong>window_size</strong> (<em>Optional</em><em>[</em><em>tuple</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。领域匹配半径格点数目。</p></li>
 <li><p><strong>acc</strong> (<em>int</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">4</span></code>。计算结果的精度值，即保留有效小数点位数</p></li>
+<li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
 </ul>
 </dd>
-<dt class="field-odd">返回</dt>
-<dd class="field-odd"><p>各等级的不同评分结果。</p>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>各等级的不同评分结果。</p>
 </dd>
 </dl>
 </dd></dl>

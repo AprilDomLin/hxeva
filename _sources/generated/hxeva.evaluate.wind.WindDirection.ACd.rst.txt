@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.WindDirection.ACd
+=====================================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: WindDirection.ACd

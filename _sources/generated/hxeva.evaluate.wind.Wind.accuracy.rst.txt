@@ -1,6 +1,0 @@
-﻿hxeva.evaluate.wind.Wind.accuracy
-=================================
-
-.. currentmodule:: hxeva.evaluate.wind
-
-.. automethod:: Wind.accuracy

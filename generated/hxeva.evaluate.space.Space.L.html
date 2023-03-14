@@ -102,7 +102,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">统计误差检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">风场检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html">业务基础模块</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
@@ -110,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id2">其他计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id3">常量信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id4">数据结构</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
@@ -185,16 +185,15 @@
 <h1>hxeva.evaluate.space.Space.L<a class="headerlink" href="#hxeva-evaluate-space-space-l" title="永久链接至标题">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="hxeva.evaluate.space.Space.L">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-prename descclassname"><span class="pre">Space.</span></span><span class="sig-name descname"><span class="pre">L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/space.html#Space.L"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.space.Space.L" title="永久链接至目标">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-prename descclassname"><span class="pre">Space.</span></span><span class="sig-name descname"><span class="pre">L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hxeva/evaluate/space.html#Space.L"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#hxeva.evaluate.space.Space.L" title="永久链接至目标">¶</a></dt>
 <dd><p>落区分值计算</p>
 <blockquote>
 <div><dl class="simple">
-<dt>Args:</dt><dd><p>truth : 真值数据或真值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)
-test :  测试值数据或测试值落区属性(<a class="reference internal" href="hxeva.evaluate.space.Property.html#hxeva.evaluate.space.Property" title="hxeva.evaluate.space.Property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code></a>)</p>
-</dd>
-<dt>Keyword Args:</dt><dd><p>exist_flag(<code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code>): 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
-threshold(list): 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。
-min_points(list): 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p>
+<dt>Args:</dt><dd><p>truth: 真值数据或真值落区属性(<code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code>)
+test: 测试值数据或测试值落区属性(<code class="xref py py-obj docutils literal notranslate"><span class="pre">Property</span></code>)
+exist_flag: 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code>。数据存在与否的标记，shape同truth和test。数组值为True时,表明truth和test均存在，否则存在缺失。
+threshold: 默认为 <code class="docutils literal notranslate"><span class="pre">[0.1，</span> <span class="pre">999]</span></code>。SAL空间检验的边界阈值范围。
+min_points: 默认为 <code class="docutils literal notranslate"><span class="pre">15</span></code>。SAL空间检验的最小落区格点数目。</p>
 </dd>
 <dt>Returns:</dt><dd><p>落区得分(L)</p>
 </dd>

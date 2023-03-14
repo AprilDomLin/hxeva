@@ -101,6 +101,8 @@
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.hss.html">hxeva.evaluate.score.Score.hss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.po.html">hxeva.evaluate.score.Score.po</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.pod.html">hxeva.evaluate.score.Score.pod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ra.html">hxeva.evaluate.score.Score.ra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.rd.html">hxeva.evaluate.score.Score.rd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.sr.html">hxeva.evaluate.score.Score.sr</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.scores.html">hxeva.evaluate.score.Score.scores</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ts.html">hxeva.evaluate.score.Score.ts</a></li>
@@ -109,7 +111,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id2">空间检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">统计误差检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">风场检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html">业务基础模块</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
@@ -117,6 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id2">其他计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id3">常量信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id4">数据结构</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
@@ -197,7 +199,7 @@
 <p><span class="math notranslate nohighlight">\(Bias = \left|\frac{tp + tn}{tp + fn} - 1\right|\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">参数</dt>
-<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva.evaluate.score.ContingencyTable.html#hxeva.evaluate.score.ContingencyTable" title="hxeva.evaluate.score.ContingencyTable"><em>hxeva.evaluate.score.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
+<dd class="field-odd"><p><strong>tables</strong> (<a class="reference internal" href="hxeva._typing.ContingencyTable.html#hxeva._typing.ContingencyTable" title="hxeva._typing.ContingencyTable"><em>hxeva._typing.ContingencyTable</em></a>) – 联列表分类结果，包含 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fp</span></code> 、 <code class="xref py py-obj docutils literal notranslate"><span class="pre">fn</span></code> 和 <code class="xref py py-obj docutils literal notranslate"><span class="pre">tn</span></code> 的数值。</p>
 </dd>
 <dt class="field-even">返回</dt>
 <dd class="field-even"><p>偏差值。当预报无降水时或未对应等级降水时，返回 <code class="xref py py-obj docutils literal notranslate"><span class="pre">NaN</span></code> 。</p>

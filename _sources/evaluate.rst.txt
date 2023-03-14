@@ -20,6 +20,8 @@
     Score.hss
     Score.po
     Score.pod
+    Score.ra
+    Score.rd
     Score.sr
     Score.scores
     Score.ts
@@ -74,31 +76,12 @@
 
     WindDirection.classify
     WindDirection.transform
+    WindDirection.ACd
+    WindDirection.SCd
     WindSpeed.classify
     WindSpeed.transform
-    WindSpeed.severer
-    WindSpeed.weaker
-    Wind.accuracy
-    Wind.ACd
-    Wind.ACs
-    Wind.ACz
-    Wind.FSs
-    Wind.FWs
-    Wind.SCd
-    Wind.score
-    Wind.SCs
-    Wind.winddirection
-    Wind.windspeed
-
-
-.. currentmodule:: hxeva.evaluate
-
-数据结构
-================================
-.. autosummary::
-    :toctree: generated
-    :nosignatures:
-    :template: classtemplate.rst
-
-    score.ContingencyTable
-    space.Property
+    WindSpeed.ACs
+    WindSpeed.SCs
+    WindSpeed.FWs
+    WindSpeed.FSs
+    ACz

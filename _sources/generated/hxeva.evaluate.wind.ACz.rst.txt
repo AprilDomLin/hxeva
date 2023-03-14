@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.ACz
+=======================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. autofunction:: ACz

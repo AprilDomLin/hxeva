@@ -100,6 +100,8 @@
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.hss.html">hxeva.evaluate.score.Score.hss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.po.html">hxeva.evaluate.score.Score.po</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.pod.html">hxeva.evaluate.score.Score.pod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ra.html">hxeva.evaluate.score.Score.ra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.rd.html">hxeva.evaluate.score.Score.rd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.sr.html">hxeva.evaluate.score.Score.sr</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.scores.html">hxeva.evaluate.score.Score.scores</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hxeva.evaluate.score.Score.ts.html">hxeva.evaluate.score.Score.ts</a></li>
@@ -108,7 +110,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id2">空间检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id3">统计误差检验</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id4">风场检验</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluate.html#id5">数据结构</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html">业务基础模块</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id2">数值模式产品</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../product.html#id3">短临强对流产品</a></li>
@@ -116,6 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">气象学计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id2">其他计算</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils.html#id3">常量信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html#id4">数据结构</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../others.html">其他</a></li>
@@ -276,7 +278,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>truth</strong> (<em>numpy.ndarray</em>) – 真实值数组 或 转变数组</p></li>
 <li><p><strong>test</strong> (<em>numpy.ndarray</em>) – 待测试值数组 或 转变数组</p></li>
-<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – 分类等级</p></li>
+<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – 分类等级</p></li>
 <li><p><strong>exist_flag</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 数据存在与否的标记，shape同truth和test。数组值为True时, 表明truth和test均存在，否则存在缺失。</p></li>
 <li><p><strong>method</strong> (<em>str</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">binary</span></code> 。参数可选择 <code class="docutils literal notranslate"><span class="pre">binary</span></code> (二分类), <code class="docutils literal notranslate"><span class="pre">multi</span></code> (多分类) 和 <code class="docutils literal notranslate"><span class="pre">grade</span></code> (多级)。</p></li>
 <li><p><strong>window_size</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – 默认为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 。 领域匹配窗口直径格点数，若为None，则不进行领域匹配。 【注：当前仅支持 binary 二分类方法时使用】</p></li>

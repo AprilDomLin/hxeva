@@ -38,3 +38,15 @@
     :template: classtemplate.rst
 
     Threshold
+
+.. currentmodule:: hxeva._typing
+
+数据结构
+================================
+.. autosummary::
+    :toctree: generated
+    :nosignatures:
+    :template: classtemplate.rst
+
+    ContingencyTable
+    Property

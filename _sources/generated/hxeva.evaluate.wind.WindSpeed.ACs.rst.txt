@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.wind.WindSpeed.ACs
+=================================
+
+.. currentmodule:: hxeva.evaluate.wind
+
+.. automethod:: WindSpeed.ACs

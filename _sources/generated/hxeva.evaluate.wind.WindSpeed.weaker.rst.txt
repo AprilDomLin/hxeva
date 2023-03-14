@@ -1,6 +1,0 @@
-﻿hxeva.evaluate.wind.WindSpeed.weaker
-====================================
-
-.. currentmodule:: hxeva.evaluate.wind
-
-.. automethod:: WindSpeed.weaker

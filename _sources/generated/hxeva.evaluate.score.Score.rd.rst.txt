@@ -1,0 +1,6 @@
+﻿hxeva.evaluate.score.Score.rd
+=============================
+
+.. currentmodule:: hxeva.evaluate.score
+
+.. automethod:: Score.rd
